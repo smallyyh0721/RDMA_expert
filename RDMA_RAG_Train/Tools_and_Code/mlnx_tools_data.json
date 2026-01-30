@@ -1,0 +1,372 @@
+{
+  "python_tools": [
+    {
+      "name": "mlnx_dump_parser",
+      "description": "Parse and analyze MLNX_OFED dump files for comprehensive diagnostics",
+      "category": "Dump Analysis",
+      "source_file": "tools/mlnx_dump_parser",
+      "key_classes": [
+        "DumpParser",
+        "SectionParser",
+        "ErrorAnalyzer"
+      ],
+      "key_functions": [
+        "parse_dump_file",
+        "extract_kernel_log",
+        "analyze_errors",
+        "generate_report"
+      ],
+      "usage_examples": [
+        "mlnx_dump_parser dump.txt  # Parse dump file",
+        "mlnx_dump_parser -v dump.txt  # Verbose output",
+        "mlnx_dump_parser -o report.html dump.txt  # Generate HTML report",
+        "mlnx_dump_parser --kernel-only dump.txt  # Parse only kernel logs"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Processes comprehensive dump files containing kernel logs, hardware state, and configuration\n- Identifies hardware errors, driver issues, and configuration problems\n- Provides structured analysis with error categorization\n- Critical for post-mortem analysis after system crashes\n- Supports multiple dump formats from different OFED versions\n- Can correlate errors across different subsystems\n- Generates actionable recommendations\n\nKey Analysis Capabilities:\n- Kernel error message parsing and classification\n- Hardware register state interpretation\n- Driver version compatibility checking\n- Performance anomaly detection\n- Resource exhaustion identification\n",
+      "diagnostic_patterns": [
+        "Hardware fault detection: PCIe errors, thermal throttling",
+        "Driver issues: Timeout, panic, memory corruption",
+        "Configuration problems: MTU mismatch, flow control",
+        "Performance bottlenecks: High CPU, latency spikes",
+        "Resource leaks: Memory, handles, interrupts"
+      ],
+      "common_issues": [
+        "Dump file corrupted: Check file integrity and size",
+        "Incomplete dump: May indicate system crash during dump creation",
+        "Version mismatch: Ensure parser supports OFED version"
+      ]
+    },
+    {
+      "name": "mlnx_perf",
+      "description": "Comprehensive performance monitoring and analysis for Mellanox adapters",
+      "category": "Performance Analysis",
+      "source_file": "tools/mlnx_perf",
+      "key_classes": [
+        "PerformanceCollector",
+        "MetricsAnalyzer",
+        "ThresholdMonitor"
+      ],
+      "key_functions": [
+        "collect_metrics",
+        "analyze_throughput",
+        "detect_anomalies",
+        "export_data"
+      ],
+      "usage_examples": [
+        "mlnx_perf -d mlx5_0  # Monitor device mlx5_0",
+        "mlnx_perf -i 1 -d mlx5_0  # 1-second interval",
+        "mlnx_perf -t 3600 -o perf.csv  # Collect for 1 hour",
+        "mlnx_perf --latency -d mlx5_0  # Focus on latency metrics"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Real-time performance monitoring with granular metrics\n- Supports multiple collection intervals for different time scales\n- Implements anomaly detection based on statistical analysis\n- Can export data for external analysis (CSV, JSON)\n- Integrates with hardware performance counters\n- Provides baseline comparison for performance regression detection\n\nKey Metrics:\n- Throughput: Bytes/packets per second\n- Latency: Average, P50, P95, P99\n- CPU utilization: Per-core, interrupt context\n- Queue depths: Send/Receive queue utilization\n- Error rates: Packet loss, retries\n- Buffer utilization: Headroom, pressure\n\nAdvanced Features:\n- Correlation analysis between metrics\n- Threshold-based alerting\n- Historical trend analysis\n- Multi-node comparison\n",
+      "diagnostic_patterns": [
+        "Throughput degradation: Link issues, congestion",
+        "Latency spikes: Queue depth, interrupt storms",
+        "CPU utilization: Excessive interrupts, polling",
+        "Buffer exhaustion: Headroom depletion, pressure"
+      ],
+      "common_issues": [
+        "Missing metrics: Check counter support on hardware",
+        "High overhead: Reduce collection frequency",
+        "Permission denied: Needs access to performance counters"
+      ]
+    },
+    {
+      "name": "mlnx_qos",
+      "description": "Configure and analyze Quality of Service for RDMA networks",
+      "category": "QoS Management",
+      "source_file": "tools/mlnx_qos",
+      "key_classes": [
+        "QoSConfigurator",
+        "PriorityManager",
+        "FlowControlAnalyzer"
+      ],
+      "key_functions": [
+        "configure_pfc",
+        "set_priority_flow_control",
+        "configure_ets",
+        "analyze_qos_config"
+      ],
+      "usage_examples": [
+        "mlnx_qos -i eth0 -p 3,4  # Enable PFC on priorities 3,4",
+        "mlnx_qos -i eth0 -e 50:30:20  # ETS bandwidth allocation",
+        "mlnx_qos -i eth0 --show  # Show current QoS config",
+        "mlnx_qos -i eth0 --validate  # Validate QoS configuration"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Manages PFC (Priority Flow Control) for lossless Ethernet\n- Configures ETS (Enhanced Transmission Selection) for bandwidth allocation\n- Supports DCB (Data Center Briding) standards\n- Critical for RoCEv2 performance in congested networks\n- Can validate QoS configuration for correctness\n- Provides QoS monitoring and statistics\n\nKey Concepts:\n- PFC: Per-priority pause frames for lossless delivery\n- ETS: Bandwidth allocation across priorities\n- DCBX: DCB exchange protocol for auto-configuration\n- Priority: Traffic classification and marking\n\nConfiguration Strategies:\n- Lossless priorities: Enable PFC for RDMA traffic\n- Bandwidth allocation: Use ETS for fair sharing\n- Buffer sizing: Match PFC timeout with buffer depth\n- Congestion management: ECN marking and CNP processing\n",
+      "diagnostic_patterns": [
+        "Packet loss in lossless priority: PFC misconfiguration",
+        "Throughput degradation: ETS bandwidth starvation",
+        "Head-of-line blocking: Priority not isolated",
+        "Buffer overflow: Insufficient PFC buffer"
+      ],
+      "common_issues": [
+        "PFC storms: Enable PFC watchdog",
+        "DCBX negotiation failure: Check switch configuration",
+        "QoS not applied: Verify hardware support"
+      ]
+    },
+    {
+      "name": "mlnx_tune",
+      "description": "Optimize system parameters for maximum RDMA performance",
+      "category": "System Tuning",
+      "source_file": "tools/mlnx_tune",
+      "key_classes": [
+        "SystemTuner",
+        "ParameterOptimizer",
+        "ProfileManager"
+      ],
+      "key_functions": [
+        "tune_kernel_params",
+        "optimize_cpu_affinity",
+        "configure_interrupts",
+        "apply_profile"
+      ],
+      "usage_examples": [
+        "mlnx_tune --profile low-latency  # Apply low-latency profile",
+        "mlnx_tune --numa-aware 1  # Enable NUMA-aware tuning",
+        "mlnx_tune --show  # Show current tuning status",
+        "mlnx_tune --rollback  # Revert previous changes"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Automatically optimizes kernel and system parameters for RDMA\n- Manages CPU affinity for NUMA-aware processing\n- Configures interrupt distribution for load balancing\n- Supports tuning profiles for different workloads\n- Validates changes and provides rollback capability\n- Addresses common performance bottlenecks\n\nKey Optimization Areas:\n1. Kernel Parameters:\n   - Memory limits (ulimit -l)\n   - TCP buffer sizes\n   - Congestion control algorithms\n   - Huge pages\n\n2. CPU Management:\n   - NUMA node binding\n   - CPU isolation for interrupt handling\n   - Thread affinity for application threads\n   - Core isolation for latency-sensitive workloads\n\n3. Interrupt Configuration:\n   - IRQ affinity\n   - Interrupt moderation\n   - RSS (Receive Side Scaling)\n   - RPS/RFS (Receive Packet Steering/Flow Steering)\n\n4. Memory Management:\n   - Transparent Huge Pages\n   - Memory registration caching\n   - DMA buffer alignment\n",
+      "diagnostic_patterns": [
+        "High CPU on interrupt context: Improve interrupt distribution",
+        "Cache thrashing: Improve NUMA locality",
+        "Memory registration overhead: Enable huge pages",
+        "Context switching: Improve thread affinity"
+      ],
+      "common_issues": [
+        "No performance improvement: Verify workload matches profile",
+        "System instability: Revert changes using --rollback",
+        "Conflicts with other services: Exclude affected services"
+      ]
+    },
+    {
+      "name": "mlx_fs_dump",
+      "description": "Dump and analyze file system state for RDMA-enabled file systems",
+      "category": "File System Analysis",
+      "source_file": "tools/mlx_fs_dump",
+      "key_classes": [
+        "FSDumper",
+        "InodeAnalyzer",
+        "LayoutVisualizer"
+      ],
+      "key_functions": [
+        "dump_filesystem",
+        "analyze_inodes",
+        "visualize_layout",
+        "check_consistency"
+      ],
+      "usage_examples": [
+        "mlx_fs_dump /mnt/rdma  # Dump file system",
+        "mlx_fs_dump -v /mnt/rdma  # Verbose dump",
+        "mlx_fs_dump --analyze /mnt/rdma  # Analyze only",
+        "mlx_fs_dump --visualize /mnt/rdma  # Generate visualization"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Dumps file system metadata for RDMA-aware file systems\n- Analyzes inode allocation and data layout\n- Visualizes file system structure for optimization\n- Detects file system anomalies and corruption\n- Useful for performance optimization of RDMA storage\n\nKey Analysis Areas:\n- Inode distribution: Identify fragmentation\n- Block allocation: Optimize for sequential access\n- Journal analysis: Check for performance issues\n- Extent mapping: Visualize data locality\n\nUse Cases:\n- Performance analysis: Identify suboptimal layouts\n- Capacity planning: Understand allocation patterns\n- Debugging: Trace file system issues\n- Optimization: Reorganize data for better performance\n",
+      "diagnostic_patterns": [
+        "Fragmentation: Non-contiguous block allocation",
+        "Journal overhead: Excessive journaling activity",
+        "Extent fragmentation: Poor locality",
+        "Inode exhaustion: Approaching limits"
+      ],
+      "common_issues": [
+        "Cannot mount: File system may be corrupted",
+        "Slow dump: File system is large and fragmented",
+        "Permission denied: Need root access"
+      ]
+    }
+  ],
+  "shell_scripts": [
+    {
+      "name": "show_counters",
+      "description": "Display comprehensive hardware and software counters for Mellanox devices",
+      "category": "Monitoring",
+      "source_file": "tools/show_counters",
+      "key_functions": [
+        "display_port_counters",
+        "show_error_counters",
+        "list_performance_counters",
+        "display_buffer_stats"
+      ],
+      "usage_examples": [
+        "show_counters  # Show all counters",
+        "show_counters -p 1  # Show port 1 only",
+        "show_counters -e  # Show error counters only",
+        "show_counters -d 5  # Show delta every 5 seconds"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Shows raw counter values from hardware\n- Provides human-readable formatting with units\n- Supports filtering by counter type\n- Can show delta between measurements\n- Essential for baseline establishment and trend analysis\n\nCounter Categories:\n1. Port Counters:\n   - Link state and configuration\n   - Speed and width\n   - Physical layer statistics\n\n2. Error Counters:\n   - Symbol errors (physical layer)\n   - CRC errors (link layer)\n   - Discards (resource exhaustion)\n   - Overruns (congestion)\n\n3. Performance Counters:\n   - Bytes/packets transmitted/received\n   - Unicast/multicast/broadcast\n   - Throughput metrics\n\n4. Buffer Counters:\n   - Queue depth\n   - Buffer utilization\n   - Headroom\n",
+      "diagnostic_output": "\nTypical Output Structure:\nPort 1 (GUID: 0x506b00000000a):\n  State: Active\n  Speed: 100 Gbps (HDR)\n  Width: 4x\n  \n  Port Counters:\n    Xmit Bytes: 1234567890123 (1.12 TB)\n    Rcv Bytes: 9876543210987 (8.99 TB)\n    Xmit Pkts: 1234567890\n    Rcv Pkts: 9876543210\n    \n  Error Counters:\n    Symbol Errors: 0\n    Link Recovery Errors: 0\n    Xmit Discards: 123\n    Rcv Errors: 45\n    \n  Buffer Counters:\n    Xmit Queue Depth: 42/256\n    Rcv Queue Depth: 78/512\n    Headroom: 1024/4096\n",
+      "integration_points": [
+        "perfquery: Similar PMA-based queries",
+        "ibqueryerrors: Error counter analysis",
+        "ethtool: General NIC statistics",
+        "sysfs: Direct counter access"
+      ]
+    },
+    {
+      "name": "show_gids",
+      "description": "Display GID (Global Identifier) information for all ports",
+      "category": "Configuration",
+      "source_file": "tools/show_gids",
+      "key_functions": [
+        "enumerate_gids",
+        "display_gid_details",
+        "check_gid_consistency",
+        "show_roce_version"
+      ],
+      "usage_examples": [
+        "show_gids  # Show all GIDs",
+        "show_gids -d mlx5_0  # Show specific device",
+        "show_gids -p 1  # Show port 1 only",
+        "show_gids --check  # Check GID consistency"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Shows all GIDs configured on each port\n- Displays GID type (IPv4, IPv6, IB)\n- Shows index and state of each GID\n- Critical for RoCE configuration and troubleshooting\n- Identifies GID conflicts and inconsistencies\n\nGID Types:\n- 0x0000: IPv4 address-based GID\n- 0x0001: IPv6 address-based GID\n- 0x0002: IB partition key-based GID\n- 0x8000+: RoCEv2 link-local GID\n\nKey Information:\n- GID index: Used for QP configuration\n- State: Active/inactive/invalid\n- Type: IPv4/IPv6/IB partition\n- Associated LID: For IB fabrics\n",
+      "diagnostic_output": "\nTypical Output Structure:\nDevice: mlx5_0\n  Port 1 (GUID: 0x506b00000000a):\n    GID[0]: fe80::0000:0000:0000:0000 (RoCEv2 Link-local)\n    GID[1]: 192.168.1.100 (IPv4)\n    GID[2]: 2001:db8::1 (IPv6)\n    GID[8]: 0xfe80000000000000:0000:506b:0000:000a (IB Partition)\n    LID: 0x0001\n  \n  Port 2 (GUID: 0x506b00000000b):\n    GID[0]: fe80::0000:0000:0000:0001 (RoCEv2 Link-local)\n    GID[1]: 192.168.2.100 (IPv4)\n    GID[2]: 2001:db8::2 (IPv6)\n",
+      "integration_points": [
+        "rdma link: Manage GID configuration",
+        "ip addr: Manage IP addresses (for RoCE)",
+        "ibv_devinfo: Query device capabilities",
+        "sysfs: GID state management"
+      ]
+    },
+    {
+      "name": "mlnx_affinity",
+      "description": "Configure and verify CPU affinity for RDMA operations",
+      "category": "CPU Affinity",
+      "source_file": "tools/mlnx_affinity",
+      "key_functions": [
+        "set_irq_affinity",
+        "set_rss_affinity",
+        "show_affinity",
+        "optimize_affinity"
+      ],
+      "usage_examples": [
+        "mlnx_affinity -d mlx5_0  # Show current affinity",
+        "mlnx_affinity -d mlx5_0 --optimize  # Auto-optimize",
+        "mlnx_affinity -d mlx5_0 --irq 0-3  # Set IRQ affinity",
+        "mlnx_affinity -d mlx5_0 --rss 0-3  # Set RSS affinity"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Manages CPU affinity for interrupts and RSS\n- Optimizes NUMA locality for RDMA operations\n- Supports automatic affinity optimization\n- Critical for high-performance RDMA applications\n\nAffinity Layers:\n1. Interrupt Affinity:\n   - MSI-X vectors to CPU mapping\n   - Balances interrupt load across cores\n   - Reduces cache thrashing\n\n2. RSS Affinity:\n   - Receive flow steering to CPUs\n   - Consistent hashing for flow distribution\n   - Improves cache locality\n\n3. Application Affinity:\n   - Thread to NUMA node binding\n   - Memory to NUMA node allocation\n   - CPU core isolation\n\nNUMA Considerations:\n- Keep RDMA operations local to NUMA node\n- Use local PCIe devices\n- Allocate memory from local node\n- Minimize cross-NUMA traffic\n",
+      "diagnostic_output": "\nTypical Output Structure:\nDevice: mlx5_0\n  NUMA Node: 0\n  \n  Interrupt Affinity:\n    IRQ 128: CPU 0-3\n    IRQ 129: CPU 4-7\n    IRQ 130: CPU 8-11\n    IRQ 131: CPU 12-15\n  \n  RSS Affinity:\n    Indirection Table:\n      Queue 0 -> CPU 0\n      Queue 1 -> CPU 1\n      Queue 2 -> CPU 2\n      Queue 3 -> CPU 3\n  \n  Optimization Status:\n    NUMA Local: YES\n    Affinity Balanced: YES\n    Cache Locality: OPTIMAL\n",
+      "integration_points": [
+        "irqbalance: Interrupt balancing daemon",
+        "numactl: NUMA control",
+        "taskset: CPU affinity",
+        "rdma-core: Verbs API uses affinity"
+      ]
+    },
+    {
+      "name": "set_irq_affinity.sh",
+      "description": "Set interrupt affinity for specific IRQs or devices",
+      "category": "System Configuration",
+      "source_file": "tools/set_irq_affinity.sh",
+      "key_functions": [
+        "get_irq_list",
+        "set_affinity",
+        "verify_affinity",
+        "save_config"
+      ],
+      "usage_examples": [
+        "./set_irq_affinity.sh 128 0-3  # Set IRQ 128 to CPUs 0-3",
+        "./set_irq_affinity.sh mlx5_0 0-7  # Set all IRQs for device",
+        "./set_irq_affinity.sh -a 0-15  # Set affinity automatically",
+        "./set_irq_affinity.sh --persist 128 0-3  # Persist across reboot"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Sets CPU mask for specific IRQs\n- Can set affinity for all IRQs of a device\n- Supports comma-separated CPU lists\n- Persists configuration across reboots (optional)\n\nUsage Patterns:\n- Single IRQ: set_irq_affinity.sh 128 0-3\n- All IRQs of device: set_irq_affinity.sh mlx5_0 0-7\n- Multiple IRQs: set_irq_affinity.sh 128,129,130 0-3\n\nCPU Mask Format:\n- Single CPU: 0\n- Range: 0-3\n- Comma-separated: 0,1,2,3\n- Hex mask: 0xF (CPUs 0-3)\n",
+      "diagnostic_output": "\nSetting IRQ affinity for mlx5_0:\n  IRQ 128 -> 0-3 (OK)\n  IRQ 129 -> 0-3 (OK)\n  IRQ 130 -> 4-7 (OK)\n  IRQ 131 -> 4-7 (OK)\n  \nVerification:\n  IRQ 128: 0-3\n  IRQ 129: 0-3\n  IRQ 130: 4-7\n  IRQ 131: 4-7\n  All affinities verified\n",
+      "integration_points": [
+        "/proc/irq/*/smp_affinity_list - Current affinity",
+        "irqbalance: Dynamic balancing",
+        "systemd: Service persistence",
+        "udev: Automatic configuration"
+      ]
+    },
+    {
+      "name": "show_irq_affinity.sh",
+      "description": "Display current interrupt affinity for all IRQs or specific devices",
+      "category": "Monitoring",
+      "source_file": "tools/show_irq_affinity.sh",
+      "key_functions": [
+        "list_all_irqs",
+        "filter_by_device",
+        "display_affinity",
+        "summarize_distribution"
+      ],
+      "usage_examples": [
+        "./show_irq_affinity.sh  # Show all IRQs",
+        "./show_irq_affinity.sh mlx5_0  # Show device IRQs",
+        "./show_irq_affinity.sh -s  # Show summary",
+        "./show_irq_affinity.sh -d  # Show detailed info"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Shows interrupt distribution across CPUs\n- Can filter by device or IRQ range\n- Provides summary statistics\n- Useful for verifying affinity configuration\n\nDisplay Modes:\n- All IRQs: Complete system view\n- Device-specific: Filter by device name\n- Summary: CPU utilization summary\n- Detailed: Full IRQ information\n",
+      "diagnostic_output": "\nSummary Interrupt Distribution:\nCPU 0: 12543 interrupts\nCPU 1: 12345 interrupts\nCPU 2: 12789 interrupts\nCPU 3: 12456 interrupts\n...\n\nDevice: mlx5_0\n  IRQ 128: 0-3 (5123 interrupts)\n  IRQ 129: 0-3 (4892 interrupts)\n  IRQ 130: 4-7 (5012 interrupts)\n  IRQ 131: 4-7 (5234 interrupts)\n  \nTotal interrupts: 20261\nDistribution: BALANCED\n",
+      "integration_points": [
+        "set_irq_affinity.sh: Modify affinity",
+        "/proc/interrupts: Raw interrupt data",
+        "irqbalance: Dynamic balancing",
+        "mpstat: CPU utilization"
+      ]
+    }
+  ],
+  "performance_tools": [
+    {
+      "name": "bandwidth_test",
+      "description": "Test and measure RDMA bandwidth between endpoints",
+      "metrics_collected": [
+        "Throughput (bytes/sec)",
+        "Message rate (messages/sec)",
+        "CPU utilization",
+        "Latency distribution"
+      ],
+      "output_format": "CSV, JSON, Plain text",
+      "expert_insights": "\nExpert Analysis:\n- Measures theoretical and achievable bandwidth\n- Tests different message sizes (1B to 4MB)\n- Identifies MTU and efficiency issues\n- Can test bidirectional performance\n\nKey Variables:\n- Message size: Small messages → overhead dominated\n- QP type: RC vs UC vs UD\n- Number of QPs: Parallelism\n- CPU binding: NUMA locality\n\nPerformance Factors:\n- PCIe bandwidth: Bottleneck for small messages\n- Network bandwidth: Limit for large messages\n- CPU overhead: Processing cost\n- DMA efficiency: Memory to hardware transfer\n",
+      "tuning_recommendations": [
+        "Use large messages (>4KB) for throughput",
+        "Bind to local NUMA node",
+        "Use multiple QPs for parallelism",
+        "Enable SRQ for receiver scaling",
+        "Optimize send/receive queue depths"
+      ]
+    },
+    {
+      "name": "latency_test",
+      "description": "Measure RDMA latency with various parameters",
+      "metrics_collected": [
+        "Average latency",
+        "P50/P95/P99 latency",
+        "Latency jitter",
+        "Latency distribution"
+      ],
+      "output_format": "Histogram, Statistics, Raw data",
+      "expert_insights": "\nExpert Analysis:\n- Measures one-way and round-trip latency\n- Tests different message sizes\n- Identifies latency outliers\n- Can test under load\n\nLatency Components:\n1. Processing:\n   - Send/Receive queue overhead\n   - Work request processing\n   - Completion processing\n\n2. Transmission:\n   - Wire time (message size / bandwidth)\n   - Serialization delay\n   - Network propagation\n\n3. Reception:\n   - Interrupt processing\n   - Completion queue polling\n   - Buffer copy (if needed)\n\nOptimization Targets:\n- Sub-microsecond: Ideal for RDMA\n- 1-10 μs: Good performance\n- 10-100 μs: Acceptable for most workloads\n- >100 μs: Investigate bottlenecks\n",
+      "tuning_recommendations": [
+        "Use polling for low latency (avoid interrupts)",
+        "Minimize queue depths",
+        "Use CPU isolation for critical threads",
+        "Enable kernel bypass",
+        "Optimize NUMA locality",
+        "Use inline data for small messages"
+      ]
+    },
+    {
+      "name": "stress_test",
+      "description": "Stress test RDMA connections and identify limits",
+      "metrics_collected": [
+        "Error rates",
+        "Connection stability",
+        "Resource utilization",
+        "Failure points"
+      ],
+      "output_format": "Log file, Real-time console",
+      "expert_insights": "\nExpert Analysis:\n- Finds system limits and failure points\n- Tests under extreme conditions\n- Identifies resource exhaustion\n- Validates reliability\n\nStress Dimensions:\n1. Connection Load:\n   - Number of QPs\n   - Connection rate\n   - Concurrent operations\n\n2. Data Load:\n   - Maximum bandwidth\n   - Maximum message rate\n   - Sustained load duration\n\n3. Resource Load:\n   - Memory registration\n   - Queue depth\n   - Buffer utilization\n\nFailure Modes:\n- Out of memory: Registration limits\n- Connection timeout: Resource exhaustion\n- Queue full: Inadequate depth\n- Hardware errors: Overheating, faults\n",
+      "tuning_recommendations": [
+        "Increase memory limits (ulimit -l)",
+        "Optimize queue depths",
+        "Use resource pooling",
+        "Implement connection reuse",
+        "Monitor and log all errors"
+      ]
+    }
+  ]
+}
