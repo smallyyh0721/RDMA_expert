@@ -1,0 +1,336 @@
+{
+  "tools": [
+    {
+      "name": "ibstat",
+      "description": "Query and display InfiniBand device and port status information",
+      "category": "Device Status",
+      "source_file": "infiniband-diags/ibstat.c",
+      "key_functions": [
+        "ca_dump",
+        "port_dump",
+        "ca_stat"
+      ],
+      "usage_examples": [
+        "ibstat  # Show all devices and ports",
+        "ibstat -l  # List all IB devices only",
+        "ibstat -s  # Short format",
+        "ibstat -p  # Show port list with GUIDs",
+        "ibstat mlx5_0 1  # Show specific device and port"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Uses UMAD (User MAD) library to query device information\n- Displays comprehensive device state including firmware/hardware versions\n- Critical for initial device validation\n- Shows LID (Local Identifier), SM (Subnet Manager) information, and link state\n- Port state machine: Down → Initializing → Armed → Active\n",
+      "common_issues": [
+        "Device not found: Check if kernel modules are loaded (ib_uverbs, hw driver)",
+        "Permission denied: Verify /dev/infiniband/uverbs* permissions",
+        "Port down: Check cable, switch configuration, SM status"
+      ],
+      "error_codes": [
+        "EACCES - Permission denied accessing device",
+        "ENODEV - Device not found",
+        "EINVAL - Invalid parameter"
+      ]
+    },
+    {
+      "name": "ibqueryerrors",
+      "description": "Query and analyze error counters across the fabric",
+      "category": "Error Analysis",
+      "source_file": "infiniband-diags/ibqueryerrors.c",
+      "key_functions": [
+        "query_cap_mask",
+        "print_errors",
+        "print_results",
+        "check_threshold",
+        "print_port_config"
+      ],
+      "usage_examples": [
+        "ibqueryerrors  # Query all ports with errors exceeding threshold",
+        "ibqueryerrors -s 1,2,3  # Suppress specific error types",
+        "ibqueryerrors -G 0x506b00000000a  # Query specific port GUID",
+        "ibqueryerrors --data  # Include data counters for error ports",
+        "ibqueryerrors --details  # Include detailed error breakdown",
+        "ibqueryerrors -k  # Clear errors after reading",
+        "ibqueryerrors --switch  # Query switches only"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Uses Performance Management Agent (PMA) queries via GSI (General Service Interface)\n- Queries PortCounters (standard) and PortCountersExt (extended) attributes\n- Implements threshold-based error detection (configurable via /etc/ibdiag.conf/error_thresholds)\n- Can query all ports or specific port GUIDs\n- Supports error clearing after read (-k, -K flags)\n- Provides detailed error breakdown including:\n  * Symbol errors: Physical layer issues\n  * Link recovery errors: Link instability\n  * Excessive buffer overruns: Congestion\n  * VL15 dropped: Unroutable packets\n- Critical for identifying physical layer and fabric issues\n- Integrates with ibnetdiscover for fabric topology\n- Can suppress common errors for cleaner output\n",
+      "common_issues": [
+        "PMA query failures: Check if device supports Performance Management",
+        "High symbol errors: Usually indicates cabling or transceiver issues",
+        "Link recovery errors: Link training failures, check speed/mode negotiation",
+        "Timeouts: SM may be down, check subnet manager status"
+      ],
+      "error_codes": [
+        "ETIMEDOUT - MAD query timeout",
+        "EIO - I/O error during query",
+        "ENOTSUP - Hardware doesn't support requested operation"
+      ]
+    },
+    {
+      "name": "ibnetdiscover",
+      "description": "Discover and map InfiniBand fabric topology",
+      "category": "Topology Discovery",
+      "source_file": "infiniband-diags/ibnetdiscover.c",
+      "key_functions": [
+        "ibnd_discover_fabric",
+        "ibnd_iter_nodes"
+      ],
+      "usage_examples": [
+        "ibnetdiscover  # Discover entire fabric",
+        "ibnetdiscover --load-cache fabric.cache  # Load from cache",
+        "ibnetdiscover -G 0x506b00000000a  # Discover around specific port",
+        "ibnetdiscover -H 3  # Limit discovery to 3 hops"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Performs SMP (Subnet Management Protocol) queries to build fabric map\n- Discovers all CAs (Channel Adapters), switches, and routers\n- Maps GUID (Globally Unique Identifier) to LID mappings\n- Identifies port connections and link states\n- Can save/load fabric topology cache for faster subsequent scans\n- Critical for understanding fabric layout and troubleshooting routing\n- Shows path information between nodes\n- Supports limited scope discovery around a specific node\n",
+      "common_issues": [
+        "Discovery timeout: Increase timeout with -o option",
+        "Partial discovery: SM may be down or fabric partitioned",
+        "Permission denied: Need root access for some operations"
+      ],
+      "error_codes": [
+        "See manual page for detailed error codes"
+      ]
+    },
+    {
+      "name": "perfquery",
+      "description": "Query performance counters for detailed analysis",
+      "category": "Performance Monitoring",
+      "source_file": "infiniband-diags/perfquery.c",
+      "key_functions": [
+        "perf_query_via",
+        "mad_decode_field"
+      ],
+      "usage_examples": [
+        "perfquery 1 0  # Query port 1 of lid 0",
+        "perfquery --all  # Query all counters",
+        "perfquery -x 0x3f  # Reset counters",
+        "perfquery -e  # Query extended counters"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Low-level performance counter queries via PMA\n- Can query individual counters or all counters\n- Supports extended counters on newer hardware\n- Essential for performance baseline and trend analysis\n- Can reset counters for clean measurement\n- Provides raw counter values for external analysis tools\n",
+      "common_issues": [
+        "Counter not supported: Hardware may not implement specific counter",
+        "Read errors: Check device supports Performance Management class"
+      ],
+      "error_codes": [
+        "EAGAIN - Counter not supported",
+        "ENOTSUP - Extended counters not available"
+      ]
+    },
+    {
+      "name": "iblinkinfo",
+      "description": "Display detailed link information including speed, width, and state",
+      "category": "Link Analysis",
+      "source_file": "infiniband-diags/iblinkinfo.c",
+      "key_functions": [
+        "print_port_config",
+        "get_max_msg"
+      ],
+      "usage_examples": [
+        "iblinkinfo  # Show all links",
+        "iblinkinfo -G 0x506b00000000a  # Show specific port",
+        "iblinkinfo -s  # Short format"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Shows comprehensive link configuration and state\n- Displays link speed (SDR/DDR/QDR/FDR/EDR/HDR/NDR)\n- Shows link width (1x, 2x, 4x, 8x, 12x)\n- Physical state and logical state\n- Link layer (InfiniBand, RoCE, iWARP)\n- Remote port information\n- Critical for verifying link configuration and identifying mismatched settings\n",
+      "common_issues": [
+        "Speed mismatch: Check both ends negotiate same speed",
+        "Width mismatch: Verify cable and transceiver capabilities",
+        "Link down: Check physical connections and SM"
+      ],
+      "error_codes": [
+        "See manual page for detailed error codes"
+      ]
+    },
+    {
+      "name": "ibping",
+      "description": "Test connectivity to InfiniBand ports using MAD ping",
+      "category": "Connectivity Test",
+      "source_file": "infiniband-diags/ibping.c",
+      "key_functions": [
+        "ping_via",
+        "send_mad"
+      ],
+      "usage_examples": [
+        "ibping 1  # Ping LID 1",
+        "ibping -G 0x506b00000000a  # Ping specific GUID",
+        "ibping -c 10 1  # Send 10 pings"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Layer 1/2 ping using Subnet Management Packets\n- Unlike ICMP ping, tests at InfiniBand protocol layer\n- Can test connectivity before IP is configured\n- Measures round-trip time at IB layer\n- Essential for isolating IB layer vs IP layer issues\n",
+      "common_issues": [
+        "Timeout: Port may be down or unreachable",
+        "No response: Check if SM assigns LID to target"
+      ],
+      "error_codes": [
+        "See manual page for detailed error codes"
+      ]
+    },
+    {
+      "name": "ibtracert",
+      "description": "Trace route between InfiniBand endpoints",
+      "category": "Routing Analysis",
+      "source_file": "infiniband-diags/ibtracert.c",
+      "key_functions": [
+        "trace_route",
+        "print_hop"
+      ],
+      "usage_examples": [
+        "ibtracert 1 2  # Trace from LID 1 to LID 2",
+        "ibtracert -G 0x506b00000000a 0x506b00000000b  # Trace by GUID"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Similar to traceroute but for InfiniBand\n- Shows path hops and each hop's information\n- Helps identify routing issues and loops\n- Useful for understanding SM routing decisions\n- Can trace between any two GUIDs in the fabric\n",
+      "common_issues": [
+        "No route: SM routing may be misconfigured",
+        "Path changes: SM may be rebalancing load"
+      ],
+      "error_codes": [
+        "See manual page for detailed error codes"
+      ]
+    },
+    {
+      "name": "saquery",
+      "description": "Query Subnet Administrator for fabric information",
+      "category": "Subnet Administration",
+      "source_file": "infiniband-diags/saquery.c",
+      "key_functions": [
+        "sa_query",
+        "sa_get_handle"
+      ],
+      "usage_examples": [
+        "saquery  # Show SM information",
+        "saquery -G 0x506b00000000a  # Query specific node",
+        "saquery -p  # Show port records"
+      ],
+      "expert_notes": "\nExpert Analysis:\n- Queries SM (Subnet Manager) for administrative information\n- Accesses PathRecords, NodeRecords, etc.\n- Critical for understanding SM's view of the fabric\n- Can query for routing information, GID mappings, etc.\n- Essential when troubleshooting SM-related issues\n",
+      "common_issues": [
+        "SA query failures: SM may be down or unreachable",
+        "Timeout: SM overloaded or network partitioned"
+      ],
+      "error_codes": [
+        "See manual page for detailed error codes"
+      ]
+    }
+  ],
+  "libraries": [
+    {
+      "name": "libibverbs",
+      "description": "Userspace Verbs API for RDMA operations",
+      "key_headers": [
+        "<infiniband/verbs.h>",
+        "<infiniband/driver.h>"
+      ],
+      "main_structures": [
+        "struct ibv_context",
+        "struct ibv_pd",
+        "struct ibv_mr",
+        "struct ibv_qp",
+        "struct ibv_cq",
+        "struct ibv_comp_channel",
+        "struct ibv_srq",
+        "struct ibv_ah",
+        "struct ibv_wc"
+      ],
+      "api_functions": [
+        "ibv_get_device_list",
+        "ibv_open_device",
+        "ibv_alloc_pd",
+        "ibv_reg_mr",
+        "ibv_create_qp",
+        "ibv_create_cq",
+        "ibv_post_send",
+        "ibv_post_recv",
+        "ibv_poll_cq",
+        "ibv_req_notify_cq",
+        "ibv_create_ah",
+        "ibv_destroy_ah"
+      ],
+      "expert_insights": "\nExpert Insights on libibverbs:\n\n1. Architecture Overview:\n   - Provider model: Hardware-specific implementations (mlx5, rxe, etc.)\n   - Asynchronous operation model: Queue-based processing\n   - Zero-copy capability: Direct hardware access\n\n2. Key Design Patterns:\n   - Resource allocation: PD → MR → QP → CQ hierarchy\n   - Work Requests: Send/Receive/Read/Write/Atomic operations\n   - Completion handling: Polling vs Event-driven\n\n3. Performance Considerations:\n   - Memory registration overhead: Use MR caching for hot paths\n   - Queue sizing: Balance between latency and throughput\n   - CPU affinity: Bind threads to specific NUMA nodes\n   - Doorbell batching: Reduce MMIO writes\n\n4. Common Pitfalls:\n   - Memory alignment: Ensure proper buffer alignment\n   - SGE limits: Check max_sge per device\n   - Completion processing: Don't block in completion handler\n   - Resource cleanup: Proper destruction order matters\n"
+    },
+    {
+      "name": "librdmacm",
+      "description": "RDMA Connection Manager for RDMA CM protocol",
+      "key_headers": [
+        "<rdma/rdma_cma.h>",
+        "<rdma/rsocket.h>"
+      ],
+      "main_structures": [
+        "struct rdma_cm_id",
+        "struct rdma_event_channel"
+      ],
+      "api_functions": [
+        "rdma_create_id",
+        "rdma_bind_addr",
+        "rdma_listen",
+        "rdma_connect",
+        "rdma_accept",
+        "rdma_reject",
+        "rdma_disconnect",
+        "rdma_get_cm_event",
+        "rdma_ack_cm_event",
+        "rdma_resolve_addr",
+        "rdma_resolve_route"
+      ],
+      "expert_insights": "\nExpert Insights on librdmacm:\n\n1. Connection Model:\n   - Client-Server paradigm similar to TCP sockets\n   - Asynchronous event-driven architecture\n   - Works over both InfiniBand and RoCE\n\n2. Event Handling:\n   - RDMA_CM_EVENT_ADDR_RESOLVED: Address resolution complete\n   - RDMA_CM_EVENT_ROUTE_RESOLVED: Route determination complete\n   - RDMA_CM_EVENT_ESTABLISHED: Connection established\n   - RDMA_CM_EVENT_DISCONNECTED: Remote disconnected\n   - RDMA_CM_EVENT_REJECTED: Connection rejected\n\n3. Connection States:\n   - IDLE → ADDR_RESOLVED → ROUTE_RESOLVED → CONNECT → ESTABLISHED\n   - Proper state machine handling is critical\n\n4. Integration with Verbs:\n   - rdma_cm_id contains a verbs structure\n   - QP can be accessed via id->qp\n   - PD and CQ are created by CM by default\n\n5. Performance:\n   - Connection setup overhead is significant\n   - Reuse connections when possible\n   - Consider RDMA-aware socket API (rsocket) for socket-like API\n"
+    },
+    {
+      "name": "libibumad",
+      "description": "Userspace MAD (Management Datagram) library",
+      "key_headers": [
+        "<infiniband/umad.h>"
+      ],
+      "main_structures": [
+        "struct umad_port",
+        "struct umad_ca",
+        "struct ibmad_port"
+      ],
+      "api_functions": [
+        "umad_init",
+        "umad_get_ca",
+        "umad_get_port",
+        "umad_alloc",
+        "umad_send",
+        "umad_recv",
+        "umad_free"
+      ],
+      "expert_insights": "\nExpert Insights on libibumad:\n\n1. Purpose:\n   - Direct access to Subnet Management Packets\n   - Low-level fabric management\n   - Basis for all infiniband-diags tools\n\n2. MAD Classes:\n   - SMI (Subnet Management Interface): Port 0, QP 0\n   - GSI (General Service Interface): Port 1, QP 1\n   - SA (Subnet Administrator): Queries to SM\n\n3. Usage Patterns:\n   - Must open specific CA and port\n   - Packet format: MAD header + attribute-specific data\n   - Method codes: Get, Set, Trap, etc.\n\n4. Common Operations:\n   - NodeInfo query (Attribute ID 0x11)\n   - PortInfo query (Attribute ID 0x15)\n   - Performance Management queries (Class 0x04)\n\n5. Performance:\n   - Each MAD is a synchronous operation\n   - Can batch operations for efficiency\n   - Consider using libibmad for higher-level access\n"
+    }
+  ],
+  "code_analysis": [
+    {
+      "file_path": "infiniband-diags/ibstat.c",
+      "functionality": "Device and port status query and display",
+      "key_algorithms": [
+        "UMAD library initialization",
+        "CA (Channel Adapter) enumeration",
+        "Port information extraction",
+        "State machine interpretation"
+      ],
+      "data_structures": [
+        "umad_ca_t - CA information structure",
+        "umad_port_t - Port information structure",
+        "Port state arrays (port_state_str, port_phy_state_str)"
+      ],
+      "expert_code_snippets": [
+        "\n// Expert analysis: Port state interpretation\n// From ibstat.c, shows state machine mapping\nstatic const char * const port_state_str[] = {\n    \"???\",\n    \"Down\",\n    \"Initializing\",\n    \"Armed\",\n    \"Active\"\n};\n\n// Expert insight: This is the InfiniBand link state machine\n// Down → Initializing → Armed → Active\n// Each state represents a specific link establishment phase\n// - Down: No physical link\n// - Initializing: Physical link training\n// - Armed: Link ready, waiting for SM configuration\n// - Active: Fully operational, can transfer data\n// Understanding this is critical for link troubleshooting\n",
+        "\n// Expert analysis: CA device enumeration\n// From ibstat.c, shows device discovery process\ndevice_list = umad_get_ca_device_list();\nif (!device_list && errno)\n    IBPANIC(\"can't list IB device names\");\n\nif (umad_sort_ca_device_list(&device_list, 0))\n    IBWARN(\"can't sort list IB device names\");\n\n// Expert insight: \n// 1. Gets list of all CAs from /sys/class/infiniband\n// 2. Sorts by device name for consistent ordering\n// 3. Each CA can have multiple ports\n// 4. Must handle cases where device list is empty\n// This pattern is used across all infiniband-diags tools\n"
+      ],
+      "performance_notes": "\nPerformance Characteristics:\n- Single pass enumeration: O(N) where N = number of CAs\n- No network traffic: All data from /sys filesystem\n- Fast operation: < 10ms for typical systems\n- Thread-safe: Uses file-based enumeration\n\nOptimization Opportunities:\n- Cache device list for repeated queries\n- Parallelize port queries across devices\n- Use inotify for device change detection\n"
+    },
+    {
+      "file_path": "infiniband-diags/ibqueryerrors.c",
+      "functionality": "Error counter query and threshold-based analysis",
+      "key_algorithms": [
+        "PMA (Performance Management Agent) queries",
+        "Threshold-based error filtering",
+        "Extended counter support detection",
+        "Error detail extraction"
+      ],
+      "data_structures": [
+        "ibnd_node_t - Fabric node representation",
+        "ibnd_port_t - Port information",
+        "thresholds array - Error threshold values"
+      ],
+      "expert_code_snippets": [
+        "\n// Expert analysis: PMA query with error handling\n// From ibqueryerrors.c, shows robust MAD query pattern\nif (!pma_query_via(pc, portid, portnum, ibd_timeout, attr_id, ibmad_port)) {\n    IBWARN(\"%s query failed on %s, %s port %d\", attr_name,\n           node_name, portid2str(portid), portnum);\n    summary.pma_query_failures++;\n    return 0;\n}\n\n// Expert insight:\n// 1. Uses libibmad's pma_query_via for Performance Management queries\n// 2. Tracks query failures separately (important for diagnostics)\n// 3. Returns 0 on failure to allow continuation\n// 4. Timeout is configurable (ibd_timeout)\n// This pattern demonstrates defensive programming in diagnostic tools\n",
+        "\n// Expert analysis: Threshold checking for extended counters\n// From ibqueryerrors.c, shows capability-aware counter handling\nif (htonl(cap_mask2) & IB_PM_IS_ADDL_PORT_CTRS_EXT_SUP) {\n    mad_decode_field(pce, ext_i, (void *)&val64);\n    if (exceeds_threshold(ext_i, val64)) {\n        unit = conv_cnt_human_readable(val64, &val, 0);\n        *n += snprintf(str + *n, size - *n,\n                      \" [%s == %\" PRIu64 \" (%5.3f%s)]\",\n                      mad_field_name(ext_i), val64, val, unit);\n        is_exceeds = 1;\n    }\n}\n\n// Expert insight:\n// 1. Checks hardware capability mask before using extended counters\n// 2. Extended counters provide 64-bit values (vs 32-bit standard)\n// 3. Converts to human-readable units (K/M/G/T)\n// 4. Format: [CounterName == value (readable unit)]\n// This pattern is essential for supporting different hardware generations\n",
+        "\n// Expert analysis: Error detail query for specific error types\n// From ibqueryerrors.c, shows hierarchical error investigation\nif (i == IB_PC_XMT_DISCARDS_F && details) {\n    n += query_and_dump(str + n, sizeof(buf) - n, portid,\n                        node_name, portnum,\n                        \"PortXmitDiscardDetails\",\n                        IB_GSI_PORT_XMIT_DISCARD_DETAILS,\n                        IB_PC_RCV_LOCAL_PHY_ERR_F,\n                        IB_PC_RCV_ERR_LAST_F);\n}\n\n// Expert insight:\n// 1. Only queries detailed counters when main counter has errors\n// 2. Details provide breakdown of discard reasons\n// 3. Uses GSI class for extended attributes\n// 4. Field range specifies which details to extract\n// This hierarchical approach saves time and provides focused diagnostics\n"
+      ],
+      "performance_notes": "\nPerformance Characteristics:\n- Sequential port queries: O(P) where P = number of ports\n- Network round-trip per query: ~1-10ms depending on distance\n- Extended counters add ~50% overhead when supported\n- Can use ALL_PORT_SELECT to reduce queries (if hardware supports)\n\nOptimization Opportunities:\n- Cache fabric topology to avoid rediscovery\n- Use ALL_PORT_SELECT for switch queries (when available)\n- Limit scope to specific nodes with -G option\n- Parallelize queries for large fabrics\n- Use cached fabric data with --load-cache\n\nCritical Bottlenecks:\n- SM interaction for path records (if using -s skip-sl)\n- Fabric scan time for large networks\n- Extended counter queries on older hardware\n"
+    }
+  ]
+}
