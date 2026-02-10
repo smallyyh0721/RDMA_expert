@@ -1,0 +1,686 @@
+{
+  "scraped": {
+    "https://raw.githubusercontent.com/linux-rdma/rdma-core/master/README.md": {
+      "title": "rdma-core README",
+      "category": "web_content",
+      "filename": "RDMA_RAG_Train/Scraped_Content/07_Web_Content/rdma-core_readme_f1571a09.md",
+      "size": 4335,
+      "timestamp": "2026-02-10T01:40:12.974565+00:00"
+    },
+    "https://raw.githubusercontent.com/linux-rdma/perftest/master/README": {
+      "title": "perftest README",
+      "category": "web_content",
+      "filename": "RDMA_RAG_Train/Scraped_Content/07_Web_Content/perftest_readme_a4e607a5.md",
+      "size": 17889,
+      "timestamp": "2026-02-10T01:52:41.490931+00:00"
+    }
+  },
+  "failed": {
+    "https://docs.nvidia.com/networking/display/rdmacore50": {
+      "title": "RDMA Core Programming Manual",
+      "category": "manuals",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:42:01.667144+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/mlnxofedv24010331/rdma+and+infiniband+verbs+programming": {
+      "title": "RDMA and InfiniBand Verbs Programming",
+      "category": "manuals",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:42:08.688728+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/mlnxofedv24010331/user+manual": {
+      "title": "MLNX_OFED v24.01 User Manual",
+      "category": "manuals",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:42:15.706531+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/mlnxofedv23040533/user+manual": {
+      "title": "MLNX_OFED v23.04 User Manual",
+      "category": "manuals",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:42:22.726025+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/ufmenterpriseumv653/ufm+user+manual": {
+      "title": "UFM Enterprise User Manual",
+      "category": "manuals",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:42:29.745566+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/winaborev241000/winof-2+user+manual": {
+      "title": "WinOF-2 User Manual (Windows RDMA)",
+      "category": "manuals",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:42:36.762994+00:00"
+    },
+    "https://www.kernel.org/doc/html/latest/infiniband/index.html": {
+      "title": "Linux Kernel InfiniBand Documentation",
+      "category": "manuals",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:42:43.781220+00:00"
+    },
+    "https://www.kernel.org/doc/html/latest/networking/device_drivers/ethernet/mellanox/mlx5/index.html": {
+      "title": "Linux mlx5 Driver Documentation",
+      "category": "manuals",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:42:50.799548+00:00"
+    },
+    "https://www.roceinitiative.org/roce-for-key-applications/": {
+      "title": "RoCE Initiative - RoCE for Key Applications",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:42:57.818051+00:00"
+    },
+    "https://www.roceinitiative.org/roce-in-the-data-center/": {
+      "title": "RoCE in the Data Center",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:43:04.837988+00:00"
+    },
+    "https://www.roceinitiative.org/technology/": {
+      "title": "RoCE Technology Overview",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:43:11.855421+00:00"
+    },
+    "https://datatracker.ietf.org/doc/html/rfc5040": {
+      "title": "RFC 5040 - RDMA Protocol (RDMAP)",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:43:18.876377+00:00"
+    },
+    "https://datatracker.ietf.org/doc/html/rfc5041": {
+      "title": "RFC 5041 - DDP Protocol",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:43:25.894537+00:00"
+    },
+    "https://datatracker.ietf.org/doc/html/rfc5042": {
+      "title": "RFC 5042 - RDMA Security",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:43:32.912933+00:00"
+    },
+    "https://datatracker.ietf.org/doc/html/rfc7306": {
+      "title": "RFC 7306 - Remote Direct Memory Access Transport",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:43:39.930509+00:00"
+    },
+    "https://datatracker.ietf.org/doc/html/rfc4391": {
+      "title": "RFC 4391 - Transmission of IP over InfiniBand (IPoIB)",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:43:46.947102+00:00"
+    },
+    "https://datatracker.ietf.org/doc/html/rfc4392": {
+      "title": "RFC 4392 - IP over InfiniBand Architecture",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:43:53.963346+00:00"
+    },
+    "https://datatracker.ietf.org/doc/html/rfc3411": {
+      "title": "RFC 3411 - SNMP Architecture",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:44:00.983129+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Data_Center_Bridging": {
+      "title": "Data Center Bridging (DCB) Overview",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:44:08.002640+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Priority-based_flow_control": {
+      "title": "Priority-based Flow Control (PFC)",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:44:15.023055+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Enhanced_Transmission_Selection": {
+      "title": "Enhanced Transmission Selection (ETS)",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:44:22.041596+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Explicit_Congestion_Notification": {
+      "title": "ECN - Explicit Congestion Notification",
+      "category": "specifications",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:44:29.058968+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/connectx7vpi/": {
+      "title": "ConnectX-7 VPI Adapter Documentation",
+      "category": "product_docs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:44:36.077978+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/connectx6dxen/": {
+      "title": "ConnectX-6 Dx Adapter Documentation",
+      "category": "product_docs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:44:43.096444+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/connectx6en/": {
+      "title": "ConnectX-6 Adapter Documentation",
+      "category": "product_docs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:44:50.114901+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/connectx5en/": {
+      "title": "ConnectX-5 Adapter Documentation",
+      "category": "product_docs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:44:57.133187+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/connectx8supernicen/": {
+      "title": "ConnectX-8 SuperNIC Documentation",
+      "category": "product_docs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:45:04.152033+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/bluefielddpuosv440/": {
+      "title": "BlueField DPU OS Documentation",
+      "category": "product_docs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:45:11.172902+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/bluefieldswnv440/": {
+      "title": "BlueField Software Documentation",
+      "category": "product_docs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:45:18.191410+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/spectrumswv361106/": {
+      "title": "Spectrum Switch Software Documentation",
+      "category": "product_docs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:45:25.207760+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/onyxv31012230/": {
+      "title": "ONYX Switch OS Documentation",
+      "category": "product_docs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:45:32.225100+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/linkxen/": {
+      "title": "LinkX Cables and Transceivers Documentation",
+      "category": "product_docs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:45:39.243743+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/maborev241000/mlnx+academy+burn+tool+(mstflint)": {
+      "title": "MSTflint Firmware Tool Documentation",
+      "category": "product_docs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:45:46.261426+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/maborev241000/mst+commands+reference": {
+      "title": "MST Commands Reference",
+      "category": "product_docs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:45:53.279591+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/mlnxofedv24010331/troubleshooting": {
+      "title": "MLNX_OFED Troubleshooting Guide",
+      "category": "troubleshooting",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:46:00.299153+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/mlnxofedv24010331/infiniband+fabric+utilities": {
+      "title": "InfiniBand Fabric Utilities",
+      "category": "troubleshooting",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:46:07.319143+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/mlnxofedv24010331/rdma+performance+tests": {
+      "title": "RDMA Performance Tests (perftest)",
+      "category": "troubleshooting",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:46:14.336293+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/howto-debug-roce-in-linux": {
+      "title": "How to Debug RoCE in Linux",
+      "category": "troubleshooting",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:46:21.355625+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/performance-tuning-for-mellanox-adapters": {
+      "title": "Performance Tuning for Mellanox Adapters",
+      "category": "troubleshooting",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:46:28.374033+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/howto-configure-roce-v2-congestion-control": {
+      "title": "How to Configure RoCE v2 Congestion Control",
+      "category": "troubleshooting",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:46:35.391167+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/understanding-mlx5-ethtool-counters": {
+      "title": "Understanding mlx5 Ethtool Counters",
+      "category": "troubleshooting",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:46:42.412259+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/howto-configure-priority-flow-control--pfc-": {
+      "title": "How to Configure PFC",
+      "category": "troubleshooting",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:46:49.430780+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/howto-enable-disable-and-verify-ecn-on-mellanox-adapters": {
+      "title": "How to Enable/Disable ECN on Mellanox Adapters",
+      "category": "troubleshooting",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:46:56.449345+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/how-to-troubleshoot-rdma-traffic-issues": {
+      "title": "How to Troubleshoot RDMA Traffic Issues",
+      "category": "troubleshooting",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:47:03.468735+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/linux-sysfs-pcie-attributes-description": {
+      "title": "Linux sysfs PCIe Attributes",
+      "category": "troubleshooting",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:47:10.486132+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/understanding-pcie-configuration-for-maximum-performance": {
+      "title": "PCIe Configuration for Maximum Performance",
+      "category": "troubleshooting",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:47:17.503162+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/recommended-network-configuration-examples-for-roce-deployment": {
+      "title": "Recommended RoCE Deployment Configuration",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:47:24.522322+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/roce-configuration-for-linux-drivers-in-dscp-based-qos-mode": {
+      "title": "RoCE DSCP-based QoS Configuration",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:47:31.538797+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/howto-configure-sr-iov-for-connectx-4-connectx-5-with-kvm--ethernet-x": {
+      "title": "SR-IOV Configuration for ConnectX",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:47:38.556716+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/howto-install-mlnx-ofed-driver": {
+      "title": "How to Install MLNX_OFED Driver",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:47:45.574583+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/howto-run-ib-diagnostic-tools": {
+      "title": "How to Run IB Diagnostic Tools",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:47:52.592530+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/howto-verify-rdma-working-properly": {
+      "title": "How to Verify RDMA is Working Properly",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:47:59.611220+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/howto-configure-adaptive-routing-and-dctcp-for-roce": {
+      "title": "Adaptive Routing and DCTCP for RoCE",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:48:06.631339+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/understanding-mlx5-linux-counters": {
+      "title": "Understanding mlx5 Linux Counters",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:48:13.649965+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/multicast-over-rdma": {
+      "title": "Multicast over RDMA",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:48:20.667369+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/getting-started-with-gpudirect-rdma": {
+      "title": "Getting Started with GPUDirect RDMA",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:48:27.683834+00:00"
+    },
+    "https://enterprise-support.nvidia.com/s/article/understanding-the-rdma-cm-connection-manager": {
+      "title": "Understanding RDMA CM (Connection Manager)",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:48:34.700415+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Remote_direct_memory_access": {
+      "title": "RDMA - Wikipedia Overview",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:48:41.719028+00:00"
+    },
+    "https://en.wikipedia.org/wiki/InfiniBand": {
+      "title": "InfiniBand - Wikipedia Overview",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:48:48.737575+00:00"
+    },
+    "https://en.wikipedia.org/wiki/RDMA_over_Converged_Ethernet": {
+      "title": "RoCE - Wikipedia Overview",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:48:55.755527+00:00"
+    },
+    "https://en.wikipedia.org/wiki/iWARP": {
+      "title": "iWARP - Wikipedia Overview",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:49:02.772243+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Network_interface_controller": {
+      "title": "NIC - Wikipedia Overview",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:49:09.790451+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Ethernet": {
+      "title": "Ethernet - Wikipedia Overview",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:49:16.806971+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Network_switch": {
+      "title": "Network Switch - Wikipedia Overview",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:49:23.826166+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Optical_fiber": {
+      "title": "Optical Fiber - Wikipedia Overview",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:49:30.844830+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Small_form-factor_pluggable_transceiver": {
+      "title": "SFP Transceiver - Wikipedia Overview",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:49:37.863244+00:00"
+    },
+    "https://en.wikipedia.org/wiki/QSFP": {
+      "title": "QSFP - Wikipedia Overview",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:49:44.880181+00:00"
+    },
+    "https://en.wikipedia.org/wiki/PCI_Express": {
+      "title": "PCIe - Wikipedia Overview",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:49:51.898659+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Non-volatile_memory_express": {
+      "title": "NVMe over Fabrics Overview",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:49:58.917735+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Fabric_(computing)": {
+      "title": "Computing Fabric - Wikipedia",
+      "category": "kb",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:50:05.936634+00:00"
+    },
+    "https://blog.cloudflare.com/rdma/": {
+      "title": "Cloudflare: Intro to RDMA",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:50:12.956209+00:00"
+    },
+    "https://developer.nvidia.com/blog/unified-memory-cuda-beginners/": {
+      "title": "NVIDIA: Unified Memory for CUDA (GPUDirect context)",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:50:19.975060+00:00"
+    },
+    "https://developer.nvidia.com/blog/gpudirect-rdma-to-accelerate-gpu-based-processing/": {
+      "title": "NVIDIA: GPUDirect RDMA to Accelerate GPU Processing",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:50:26.995827+00:00"
+    },
+    "https://developer.nvidia.com/blog/optimizing-nccl-communication-for-large-scale-training/": {
+      "title": "NVIDIA: Optimizing NCCL Communication",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:50:34.013800+00:00"
+    },
+    "https://developer.nvidia.com/blog/doubling-all2all-performance-with-nvidia-collective-communications-library-2-12/": {
+      "title": "NVIDIA: Doubling All2All Performance with NCCL",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:50:41.032603+00:00"
+    },
+    "https://metebalci.com/blog/a-minimum-complete-tutorial-of-linux-infiniband/": {
+      "title": "A Minimum Complete Tutorial of Linux InfiniBand",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:50:48.050536+00:00"
+    },
+    "https://www.rdmamojo.com/2012/05/05/qp-state-machine/": {
+      "title": "RDMAMojo: QP State Machine",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:50:55.068936+00:00"
+    },
+    "https://www.rdmamojo.com/2013/01/12/ibv_modify_qp/": {
+      "title": "RDMAMojo: ibv_modify_qp",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:51:02.085976+00:00"
+    },
+    "https://www.rdmamojo.com/2013/06/01/which-queue-pair-type-to-use/": {
+      "title": "RDMAMojo: Which QP Type to Use",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:51:09.103588+00:00"
+    },
+    "https://www.rdmamojo.com/2014/11/08/ibv_create_cq/": {
+      "title": "RDMAMojo: ibv_create_cq",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:51:16.121684+00:00"
+    },
+    "https://www.rdmamojo.com/2012/12/21/ibv_post_send/": {
+      "title": "RDMAMojo: ibv_post_send",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:51:23.138078+00:00"
+    },
+    "https://www.rdmamojo.com/2013/02/02/ibv_post_recv/": {
+      "title": "RDMAMojo: ibv_post_recv",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:51:30.156326+00:00"
+    },
+    "https://www.rdmamojo.com/2012/05/18/libibverbs/": {
+      "title": "RDMAMojo: libibverbs Overview",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:51:37.174350+00:00"
+    },
+    "https://www.rdmamojo.com/2015/01/10/tips-and-tricks-optimizing-rdma-code/": {
+      "title": "RDMAMojo: Tips for Optimizing RDMA Code",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:51:44.191607+00:00"
+    },
+    "https://www.rdmamojo.com/2013/01/26/ibv_reg_mr/": {
+      "title": "RDMAMojo: ibv_reg_mr - Memory Registration",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:51:51.209636+00:00"
+    },
+    "https://www.rdmamojo.com/2012/07/21/ibv_create_qp/": {
+      "title": "RDMAMojo: ibv_create_qp",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:51:58.225639+00:00"
+    },
+    "https://insujang.github.io/2020-02-09/introduction-to-programming-infiniband/": {
+      "title": "Introduction to InfiniBand Programming",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:52:05.243346+00:00"
+    },
+    "https://insujang.github.io/2020-02-09/rdma-programming-concepts/": {
+      "title": "RDMA Programming Concepts",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:52:12.260793+00:00"
+    },
+    "https://community.fs.com/article/roce-vs-infiniband-vs-tcp.html": {
+      "title": "RoCE vs InfiniBand vs TCP",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:52:19.277943+00:00"
+    },
+    "https://community.fs.com/article/qsfp-dd-vs-osfp-vs-qsfp28.html": {
+      "title": "QSFP-DD vs OSFP vs QSFP28",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:52:26.295918+00:00"
+    },
+    "https://community.fs.com/article/data-center-switch-guide.html": {
+      "title": "Data Center Switch Guide",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:52:33.312515+00:00"
+    },
+    "https://community.fs.com/article/understanding-400g-ethernet.html": {
+      "title": "Understanding 400G Ethernet",
+      "category": "blogs",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:52:40.330785+00:00"
+    },
+    "https://www.kernel.org/doc/html/latest/infiniband/user_verbs.html": {
+      "title": "Linux Kernel - User Verbs",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:52:48.511526+00:00"
+    },
+    "https://www.kernel.org/doc/html/latest/infiniband/user_mad.html": {
+      "title": "Linux Kernel - User MAD",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:52:55.532105+00:00"
+    },
+    "https://www.kernel.org/doc/html/latest/infiniband/core_locking.html": {
+      "title": "Linux Kernel - InfiniBand Core Locking",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:53:02.551437+00:00"
+    },
+    "https://www.kernel.org/doc/html/latest/infiniband/sysfs.html": {
+      "title": "Linux Kernel - InfiniBand sysfs",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:53:09.569596+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/rdmacore50/rdma+aware+programming+overview": {
+      "title": "RDMA Aware Programming Overview",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:53:16.588034+00:00"
+    },
+    "https://docs.nvidia.com/networking/display/rdmacore50/verbs+api": {
+      "title": "Verbs API Reference",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:53:23.605438+00:00"
+    },
+    "https://en.wikipedia.org/wiki/OSI_model": {
+      "title": "OSI Model - Wikipedia",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:53:30.622955+00:00"
+    },
+    "https://en.wikipedia.org/wiki/TCP_congestion_control": {
+      "title": "TCP Congestion Control",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:53:37.640923+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Ethernet_frame": {
+      "title": "Ethernet Frame Structure",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:53:44.660615+00:00"
+    },
+    "https://en.wikipedia.org/wiki/IEEE_802.1Q": {
+      "title": "VLAN (IEEE 802.1Q)",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:53:51.678758+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Link_aggregation": {
+      "title": "Link Aggregation (LACP/Bonding)",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:53:58.696272+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Maximum_transmission_unit": {
+      "title": "MTU - Maximum Transmission Unit",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:54:05.712934+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Jumbo_frame": {
+      "title": "Jumbo Frames",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:54:12.731312+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Internet_Group_Management_Protocol": {
+      "title": "IGMP - Multicast",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:54:19.749502+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Address_Resolution_Protocol": {
+      "title": "ARP Protocol",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:54:26.766585+00:00"
+    },
+    "https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol": {
+      "title": "DHCP Protocol",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:54:33.784061+00:00"
+    },
+    "https://en.wikipedia.org/wiki/NVM_Express": {
+      "title": "NVMe Overview",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:54:40.801200+00:00"
+    },
+    "https://en.wikipedia.org/wiki/SCSI_RDMA_Protocol": {
+      "title": "SRP - SCSI RDMA Protocol",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:54:47.818210+00:00"
+    },
+    "https://en.wikipedia.org/wiki/ISCSI_Extensions_for_RDMA": {
+      "title": "iSER - iSCSI Extensions for RDMA",
+      "category": "web_content",
+      "error": "fetch_failed",
+      "timestamp": "2026-02-10T01:54:54.836326+00:00"
+    }
+  }
+}
