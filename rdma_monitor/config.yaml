@@ -1,0 +1,94 @@
+# =============================================================================
+# RDMA Network Monitor Configuration
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# General settings
+# -----------------------------------------------------------------------------
+general:
+  # Polling interval in seconds for collecting metrics
+  poll_interval: 10
+  # JSON snapshot save interval in seconds
+  snapshot_interval: 30
+  # Directory to store JSON snapshots
+  snapshot_dir: "./snapshots"
+  # Log level: DEBUG, INFO, WARNING, ERROR
+  log_level: "INFO"
+  # Log file path (empty string = stdout only)
+  log_file: ""
+
+# -----------------------------------------------------------------------------
+# Network detection
+# auto  - detect automatically (prefer IB if available, fallback to RoCE)
+# ib    - force InfiniBand mode
+# roce  - force RoCE mode
+# -----------------------------------------------------------------------------
+network:
+  mode: "auto"
+  # Specific devices to monitor (empty list = all discovered devices)
+  devices: []
+
+# -----------------------------------------------------------------------------
+# Collector toggles - enable/disable individual collectors
+# -----------------------------------------------------------------------------
+collectors:
+  performance:
+    enabled: true
+  topology:
+    enabled: true
+  configuration:
+    enabled: true
+  congestion:
+    enabled: true
+  link_status:
+    enabled: true
+
+# -----------------------------------------------------------------------------
+# Prometheus exporter
+# -----------------------------------------------------------------------------
+prometheus:
+  enabled: true
+  host: "0.0.0.0"
+  port: 9090
+  # Metric prefix in Prometheus
+  metric_prefix: "rdma"
+
+# -----------------------------------------------------------------------------
+# LLM analysis (OpenAI-compatible API)
+# -----------------------------------------------------------------------------
+llm:
+  enabled: false
+  # OpenAI-compatible endpoint URL
+  api_url: "https://api.openai.com/v1/chat/completions"
+  api_key: ""
+  model: "gpt-4"
+  # How often (in seconds) to send data for LLM analysis
+  analysis_interval: 60
+  # Maximum tokens for the LLM response
+  max_tokens: 2048
+  # System prompt for RDMA analysis
+  system_prompt: |
+    You are an expert RDMA network engineer. Analyze the following RDMA
+    monitoring data and provide insights on:
+    1. Performance anomalies or degradation
+    2. Potential congestion issues
+    3. Configuration problems
+    4. Link health concerns
+    5. Recommendations for optimization
+    Be concise and actionable.
+
+# -----------------------------------------------------------------------------
+# Dify AI workflow integration
+# -----------------------------------------------------------------------------
+dify:
+  enabled: false
+  # Dify API endpoint
+  api_url: "http://localhost/v1"
+  api_key: ""
+  # Dify workflow ID to trigger
+  workflow_id: ""
+  # How often (in seconds) to push data to Dify
+  push_interval: 60
+  # Custom inputs mapping (key = Dify input variable name)
+  input_mapping:
+    monitoring_data: "rdma_stats"
