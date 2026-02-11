@@ -1,0 +1,502 @@
+# =============================================================================
+# RDMA RAG Knowledge Base - Document Source Registry
+# =============================================================================
+# Categories: manuals, specifications, product_docs, troubleshooting, kb, blogs, web_content
+# Topics: RDMA, RoCE, InfiniBand, Networking, Ethernet, Switches, NIC, Fabric, Cable
+
+# ---------------------------------------------------------------------------
+# 1. MANUALS - Official product and software manuals
+# ---------------------------------------------------------------------------
+manuals:
+  # NVIDIA/Mellanox OFED Programming
+  - url: "https://docs.nvidia.com/networking/display/rdmacore50"
+    title: "RDMA Core Programming Manual"
+    tags: [rdma, programming, libibverbs]
+
+  - url: "https://docs.nvidia.com/networking/display/mlnxofedv24010331/rdma+and+infiniband+verbs+programming"
+    title: "RDMA and InfiniBand Verbs Programming"
+    tags: [rdma, verbs, infiniband]
+
+  - url: "https://docs.nvidia.com/networking/display/mlnxofedv24010331/user+manual"
+    title: "MLNX_OFED v24.01 User Manual"
+    tags: [ofed, drivers, installation]
+
+  - url: "https://docs.nvidia.com/networking/display/mlnxofedv23040533/user+manual"
+    title: "MLNX_OFED v23.04 User Manual"
+    tags: [ofed, drivers]
+
+  - url: "https://docs.nvidia.com/networking/display/ufmenterpriseumv653/ufm+user+manual"
+    title: "UFM Enterprise User Manual"
+    tags: [ufm, fabric, management]
+
+  - url: "https://docs.nvidia.com/networking/display/winaborev241000/winof-2+user+manual"
+    title: "WinOF-2 User Manual (Windows RDMA)"
+    tags: [windows, rdma, drivers]
+
+  # Linux Kernel RDMA
+  - url: "https://www.kernel.org/doc/html/latest/infiniband/index.html"
+    title: "Linux Kernel InfiniBand Documentation"
+    tags: [linux, kernel, infiniband]
+
+  - url: "https://www.kernel.org/doc/html/latest/networking/device_drivers/ethernet/mellanox/mlx5/index.html"
+    title: "Linux mlx5 Driver Documentation"
+    tags: [linux, mlx5, driver]
+
+# ---------------------------------------------------------------------------
+# 2. TECHNICAL SPECIFICATIONS - RFCs, standards, IBTA specs
+# ---------------------------------------------------------------------------
+specifications:
+  # IBTA and RoCE Specs
+  - url: "https://www.roceinitiative.org/roce-for-key-applications/"
+    title: "RoCE Initiative - RoCE for Key Applications"
+    tags: [roce, specification]
+
+  - url: "https://www.roceinitiative.org/roce-in-the-data-center/"
+    title: "RoCE in the Data Center"
+    tags: [roce, datacenter]
+
+  - url: "https://www.roceinitiative.org/technology/"
+    title: "RoCE Technology Overview"
+    tags: [roce, technology]
+
+  # RFCs
+  - url: "https://datatracker.ietf.org/doc/html/rfc5040"
+    title: "RFC 5040 - RDMA Protocol (RDMAP)"
+    tags: [rfc, rdmap, protocol]
+
+  - url: "https://datatracker.ietf.org/doc/html/rfc5041"
+    title: "RFC 5041 - DDP Protocol"
+    tags: [rfc, ddp, protocol]
+
+  - url: "https://datatracker.ietf.org/doc/html/rfc5042"
+    title: "RFC 5042 - RDMA Security"
+    tags: [rfc, rdma, security]
+
+  - url: "https://datatracker.ietf.org/doc/html/rfc7306"
+    title: "RFC 7306 - Remote Direct Memory Access Transport"
+    tags: [rfc, rdma, transport]
+
+  - url: "https://datatracker.ietf.org/doc/html/rfc4391"
+    title: "RFC 4391 - Transmission of IP over InfiniBand (IPoIB)"
+    tags: [rfc, ipoib, infiniband]
+
+  - url: "https://datatracker.ietf.org/doc/html/rfc4392"
+    title: "RFC 4392 - IP over InfiniBand Architecture"
+    tags: [rfc, ipoib, architecture]
+
+  - url: "https://datatracker.ietf.org/doc/html/rfc3411"
+    title: "RFC 3411 - SNMP Architecture"
+    tags: [rfc, snmp, monitoring]
+
+  # IEEE standards related
+  - url: "https://en.wikipedia.org/wiki/Data_Center_Bridging"
+    title: "Data Center Bridging (DCB) Overview"
+    tags: [dcb, ethernet, lossless]
+
+  - url: "https://en.wikipedia.org/wiki/Priority-based_flow_control"
+    title: "Priority-based Flow Control (PFC)"
+    tags: [pfc, dcb, flow_control]
+
+  - url: "https://en.wikipedia.org/wiki/Enhanced_Transmission_Selection"
+    title: "Enhanced Transmission Selection (ETS)"
+    tags: [ets, dcb, qos]
+
+  - url: "https://en.wikipedia.org/wiki/Explicit_Congestion_Notification"
+    title: "ECN - Explicit Congestion Notification"
+    tags: [ecn, congestion, networking]
+
+# ---------------------------------------------------------------------------
+# 3. PRODUCT DOCS - Hardware datasheets, product briefs, guides
+# ---------------------------------------------------------------------------
+product_docs:
+  # ConnectX Series
+  - url: "https://docs.nvidia.com/networking/display/connectx7vpi/"
+    title: "ConnectX-7 VPI Adapter Documentation"
+    tags: [connectx7, adapter, vpi]
+
+  - url: "https://docs.nvidia.com/networking/display/connectx6dxen/"
+    title: "ConnectX-6 Dx Adapter Documentation"
+    tags: [connectx6dx, adapter, ethernet]
+
+  - url: "https://docs.nvidia.com/networking/display/connectx6en/"
+    title: "ConnectX-6 Adapter Documentation"
+    tags: [connectx6, adapter]
+
+  - url: "https://docs.nvidia.com/networking/display/connectx5en/"
+    title: "ConnectX-5 Adapter Documentation"
+    tags: [connectx5, adapter]
+
+  - url: "https://docs.nvidia.com/networking/display/connectx8supernicen/"
+    title: "ConnectX-8 SuperNIC Documentation"
+    tags: [connectx8, supernic]
+
+  # BlueField DPU
+  - url: "https://docs.nvidia.com/networking/display/bluefielddpuosv440/"
+    title: "BlueField DPU OS Documentation"
+    tags: [bluefield, dpu, os]
+
+  - url: "https://docs.nvidia.com/networking/display/bluefieldswnv440/"
+    title: "BlueField Software Documentation"
+    tags: [bluefield, dpu, software]
+
+  # Spectrum Switches
+  - url: "https://docs.nvidia.com/networking/display/spectrumswv361106/"
+    title: "Spectrum Switch Software Documentation"
+    tags: [spectrum, switch, cumulus]
+
+  - url: "https://docs.nvidia.com/networking/display/onyxv31012230/"
+    title: "ONYX Switch OS Documentation"
+    tags: [onyx, switch, mellanox]
+
+  # LinkX Cables and Transceivers
+  - url: "https://docs.nvidia.com/networking/display/linkxen/"
+    title: "LinkX Cables and Transceivers Documentation"
+    tags: [linkx, cables, transceivers]
+
+  # Firmware Tools
+  - url: "https://docs.nvidia.com/networking/display/maborev241000/mlnx+academy+burn+tool+(mstflint)"
+    title: "MSTflint Firmware Tool Documentation"
+    tags: [mstflint, firmware, tools]
+
+  - url: "https://docs.nvidia.com/networking/display/maborev241000/mst+commands+reference"
+    title: "MST Commands Reference"
+    tags: [mst, commands, tools]
+
+# ---------------------------------------------------------------------------
+# 4. TROUBLESHOOTING - Debug guides, error references, diagnostics
+# ---------------------------------------------------------------------------
+troubleshooting:
+  - url: "https://docs.nvidia.com/networking/display/mlnxofedv24010331/troubleshooting"
+    title: "MLNX_OFED Troubleshooting Guide"
+    tags: [ofed, troubleshooting]
+
+  - url: "https://docs.nvidia.com/networking/display/mlnxofedv24010331/infiniband+fabric+utilities"
+    title: "InfiniBand Fabric Utilities"
+    tags: [infiniband, diags, utilities]
+
+  - url: "https://docs.nvidia.com/networking/display/mlnxofedv24010331/rdma+performance+tests"
+    title: "RDMA Performance Tests (perftest)"
+    tags: [perftest, benchmarking, rdma]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/howto-debug-roce-in-linux"
+    title: "How to Debug RoCE in Linux"
+    tags: [roce, debug, linux]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/performance-tuning-for-mellanox-adapters"
+    title: "Performance Tuning for Mellanox Adapters"
+    tags: [performance, tuning, mellanox]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/howto-configure-roce-v2-congestion-control"
+    title: "How to Configure RoCE v2 Congestion Control"
+    tags: [roce, congestion, ecn]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/understanding-mlx5-ethtool-counters"
+    title: "Understanding mlx5 Ethtool Counters"
+    tags: [mlx5, counters, monitoring]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/howto-configure-priority-flow-control--pfc-"
+    title: "How to Configure PFC"
+    tags: [pfc, flow_control, lossless]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/howto-enable-disable-and-verify-ecn-on-mellanox-adapters"
+    title: "How to Enable/Disable ECN on Mellanox Adapters"
+    tags: [ecn, mellanox, congestion]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/how-to-troubleshoot-rdma-traffic-issues"
+    title: "How to Troubleshoot RDMA Traffic Issues"
+    tags: [rdma, troubleshooting, traffic]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/linux-sysfs-pcie-attributes-description"
+    title: "Linux sysfs PCIe Attributes"
+    tags: [pcie, sysfs, linux]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/understanding-pcie-configuration-for-maximum-performance"
+    title: "PCIe Configuration for Maximum Performance"
+    tags: [pcie, performance, configuration]
+
+# ---------------------------------------------------------------------------
+# 5. KNOWLEDGE BASE - How-tos, best practices, community knowledge
+# ---------------------------------------------------------------------------
+kb:
+  - url: "https://enterprise-support.nvidia.com/s/article/recommended-network-configuration-examples-for-roce-deployment"
+    title: "Recommended RoCE Deployment Configuration"
+    tags: [roce, deployment, best_practices]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/roce-configuration-for-linux-drivers-in-dscp-based-qos-mode"
+    title: "RoCE DSCP-based QoS Configuration"
+    tags: [roce, dscp, qos]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/howto-configure-sr-iov-for-connectx-4-connectx-5-with-kvm--ethernet-x"
+    title: "SR-IOV Configuration for ConnectX"
+    tags: [sriov, connectx, kvm]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/howto-install-mlnx-ofed-driver"
+    title: "How to Install MLNX_OFED Driver"
+    tags: [ofed, installation, driver]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/howto-run-ib-diagnostic-tools"
+    title: "How to Run IB Diagnostic Tools"
+    tags: [infiniband, diagnostics, tools]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/howto-verify-rdma-working-properly"
+    title: "How to Verify RDMA is Working Properly"
+    tags: [rdma, verification, testing]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/howto-configure-adaptive-routing-and-dctcp-for-roce"
+    title: "Adaptive Routing and DCTCP for RoCE"
+    tags: [roce, routing, dctcp]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/understanding-mlx5-linux-counters"
+    title: "Understanding mlx5 Linux Counters"
+    tags: [mlx5, counters, linux]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/multicast-over-rdma"
+    title: "Multicast over RDMA"
+    tags: [multicast, rdma]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/getting-started-with-gpudirect-rdma"
+    title: "Getting Started with GPUDirect RDMA"
+    tags: [gpudirect, rdma, gpu]
+
+  - url: "https://enterprise-support.nvidia.com/s/article/understanding-the-rdma-cm-connection-manager"
+    title: "Understanding RDMA CM (Connection Manager)"
+    tags: [rdma_cm, connection, management]
+
+  # General Networking KB
+  - url: "https://en.wikipedia.org/wiki/Remote_direct_memory_access"
+    title: "RDMA - Wikipedia Overview"
+    tags: [rdma, overview, basics]
+
+  - url: "https://en.wikipedia.org/wiki/InfiniBand"
+    title: "InfiniBand - Wikipedia Overview"
+    tags: [infiniband, overview]
+
+  - url: "https://en.wikipedia.org/wiki/RDMA_over_Converged_Ethernet"
+    title: "RoCE - Wikipedia Overview"
+    tags: [roce, overview]
+
+  - url: "https://en.wikipedia.org/wiki/iWARP"
+    title: "iWARP - Wikipedia Overview"
+    tags: [iwarp, overview]
+
+  - url: "https://en.wikipedia.org/wiki/Network_interface_controller"
+    title: "NIC - Wikipedia Overview"
+    tags: [nic, networking, basics]
+
+  - url: "https://en.wikipedia.org/wiki/Ethernet"
+    title: "Ethernet - Wikipedia Overview"
+    tags: [ethernet, networking, basics]
+
+  - url: "https://en.wikipedia.org/wiki/Network_switch"
+    title: "Network Switch - Wikipedia Overview"
+    tags: [switch, networking, basics]
+
+  - url: "https://en.wikipedia.org/wiki/Optical_fiber"
+    title: "Optical Fiber - Wikipedia Overview"
+    tags: [fiber, cable, optical]
+
+  - url: "https://en.wikipedia.org/wiki/Small_form-factor_pluggable_transceiver"
+    title: "SFP Transceiver - Wikipedia Overview"
+    tags: [sfp, transceiver, cable]
+
+  - url: "https://en.wikipedia.org/wiki/QSFP"
+    title: "QSFP - Wikipedia Overview"
+    tags: [qsfp, transceiver, cable]
+
+  - url: "https://en.wikipedia.org/wiki/PCI_Express"
+    title: "PCIe - Wikipedia Overview"
+    tags: [pcie, bus, basics]
+
+  - url: "https://en.wikipedia.org/wiki/Non-volatile_memory_express"
+    title: "NVMe over Fabrics Overview"
+    tags: [nvme, nvmeof, storage]
+
+  - url: "https://en.wikipedia.org/wiki/Fabric_(computing)"
+    title: "Computing Fabric - Wikipedia"
+    tags: [fabric, computing, basics]
+
+# ---------------------------------------------------------------------------
+# 6. BLOGS - Technical blog posts, deep dives, tutorials
+# ---------------------------------------------------------------------------
+blogs:
+  - url: "https://blog.cloudflare.com/rdma/"
+    title: "Cloudflare: Intro to RDMA"
+    tags: [rdma, introduction, cloudflare]
+
+  - url: "https://developer.nvidia.com/blog/unified-memory-cuda-beginners/"
+    title: "NVIDIA: Unified Memory for CUDA (GPUDirect context)"
+    tags: [gpudirect, cuda, gpu]
+
+  - url: "https://developer.nvidia.com/blog/gpudirect-rdma-to-accelerate-gpu-based-processing/"
+    title: "NVIDIA: GPUDirect RDMA to Accelerate GPU Processing"
+    tags: [gpudirect, rdma, gpu]
+
+  - url: "https://developer.nvidia.com/blog/optimizing-nccl-communication-for-large-scale-training/"
+    title: "NVIDIA: Optimizing NCCL Communication"
+    tags: [nccl, communication, training]
+
+  - url: "https://developer.nvidia.com/blog/doubling-all2all-performance-with-nvidia-collective-communications-library-2-12/"
+    title: "NVIDIA: Doubling All2All Performance with NCCL"
+    tags: [nccl, performance, collective]
+
+  - url: "https://metebalci.com/blog/a-minimum-complete-tutorial-of-linux-infiniband/"
+    title: "A Minimum Complete Tutorial of Linux InfiniBand"
+    tags: [infiniband, linux, tutorial]
+
+  - url: "https://www.rdmamojo.com/2012/05/05/qp-state-machine/"
+    title: "RDMAMojo: QP State Machine"
+    tags: [rdma, qp, verbs]
+
+  - url: "https://www.rdmamojo.com/2013/01/12/ibv_modify_qp/"
+    title: "RDMAMojo: ibv_modify_qp"
+    tags: [rdma, verbs, api]
+
+  - url: "https://www.rdmamojo.com/2013/06/01/which-queue-pair-type-to-use/"
+    title: "RDMAMojo: Which QP Type to Use"
+    tags: [rdma, qp, design]
+
+  - url: "https://www.rdmamojo.com/2014/11/08/ibv_create_cq/"
+    title: "RDMAMojo: ibv_create_cq"
+    tags: [rdma, cq, verbs]
+
+  - url: "https://www.rdmamojo.com/2012/12/21/ibv_post_send/"
+    title: "RDMAMojo: ibv_post_send"
+    tags: [rdma, post_send, verbs]
+
+  - url: "https://www.rdmamojo.com/2013/02/02/ibv_post_recv/"
+    title: "RDMAMojo: ibv_post_recv"
+    tags: [rdma, post_recv, verbs]
+
+  - url: "https://www.rdmamojo.com/2012/05/18/libibverbs/"
+    title: "RDMAMojo: libibverbs Overview"
+    tags: [libibverbs, verbs, overview]
+
+  - url: "https://www.rdmamojo.com/2015/01/10/tips-and-tricks-optimizing-rdma-code/"
+    title: "RDMAMojo: Tips for Optimizing RDMA Code"
+    tags: [rdma, optimization, tips]
+
+  - url: "https://www.rdmamojo.com/2013/01/26/ibv_reg_mr/"
+    title: "RDMAMojo: ibv_reg_mr - Memory Registration"
+    tags: [rdma, memory, registration]
+
+  - url: "https://www.rdmamojo.com/2012/07/21/ibv_create_qp/"
+    title: "RDMAMojo: ibv_create_qp"
+    tags: [rdma, qp, create]
+
+  - url: "https://insujang.github.io/2020-02-09/introduction-to-programming-infiniband/"
+    title: "Introduction to InfiniBand Programming"
+    tags: [infiniband, programming, tutorial]
+
+  - url: "https://insujang.github.io/2020-02-09/rdma-programming-concepts/"
+    title: "RDMA Programming Concepts"
+    tags: [rdma, programming, concepts]
+
+  - url: "https://community.fs.com/article/roce-vs-infiniband-vs-tcp.html"
+    title: "RoCE vs InfiniBand vs TCP"
+    tags: [roce, infiniband, tcp, comparison]
+
+  - url: "https://community.fs.com/article/qsfp-dd-vs-osfp-vs-qsfp28.html"
+    title: "QSFP-DD vs OSFP vs QSFP28"
+    tags: [qsfp, transceiver, comparison]
+
+  - url: "https://community.fs.com/article/data-center-switch-guide.html"
+    title: "Data Center Switch Guide"
+    tags: [switch, datacenter, guide]
+
+  - url: "https://community.fs.com/article/understanding-400g-ethernet.html"
+    title: "Understanding 400G Ethernet"
+    tags: [400g, ethernet, networking]
+
+# ---------------------------------------------------------------------------
+# 7. WEB CONTENT - Community docs, GitHub READMEs, tutorials
+# ---------------------------------------------------------------------------
+web_content:
+  # rdma-core project
+  - url: "https://raw.githubusercontent.com/linux-rdma/rdma-core/master/README.md"
+    title: "rdma-core README"
+    tags: [rdma_core, github, readme]
+
+  # perftest
+  - url: "https://raw.githubusercontent.com/linux-rdma/perftest/master/README"
+    title: "perftest README"
+    tags: [perftest, benchmarking, readme]
+
+  # Linux kernel RDMA docs
+  - url: "https://www.kernel.org/doc/html/latest/infiniband/user_verbs.html"
+    title: "Linux Kernel - User Verbs"
+    tags: [kernel, verbs, linux]
+
+  - url: "https://www.kernel.org/doc/html/latest/infiniband/user_mad.html"
+    title: "Linux Kernel - User MAD"
+    tags: [kernel, mad, linux]
+
+  - url: "https://www.kernel.org/doc/html/latest/infiniband/core_locking.html"
+    title: "Linux Kernel - InfiniBand Core Locking"
+    tags: [kernel, locking, infiniband]
+
+  - url: "https://www.kernel.org/doc/html/latest/infiniband/sysfs.html"
+    title: "Linux Kernel - InfiniBand sysfs"
+    tags: [kernel, sysfs, infiniband]
+
+  # RDMA Aware Programming
+  - url: "https://docs.nvidia.com/networking/display/rdmacore50/rdma+aware+programming+overview"
+    title: "RDMA Aware Programming Overview"
+    tags: [rdma, programming, overview]
+
+  - url: "https://docs.nvidia.com/networking/display/rdmacore50/verbs+api"
+    title: "Verbs API Reference"
+    tags: [verbs, api, reference]
+
+  # Network fundamentals for RAG context
+  - url: "https://en.wikipedia.org/wiki/OSI_model"
+    title: "OSI Model - Wikipedia"
+    tags: [osi, networking, basics]
+
+  - url: "https://en.wikipedia.org/wiki/TCP_congestion_control"
+    title: "TCP Congestion Control"
+    tags: [tcp, congestion, networking]
+
+  - url: "https://en.wikipedia.org/wiki/Ethernet_frame"
+    title: "Ethernet Frame Structure"
+    tags: [ethernet, frame, basics]
+
+  - url: "https://en.wikipedia.org/wiki/IEEE_802.1Q"
+    title: "VLAN (IEEE 802.1Q)"
+    tags: [vlan, ethernet, networking]
+
+  - url: "https://en.wikipedia.org/wiki/Link_aggregation"
+    title: "Link Aggregation (LACP/Bonding)"
+    tags: [lacp, bonding, networking]
+
+  - url: "https://en.wikipedia.org/wiki/Maximum_transmission_unit"
+    title: "MTU - Maximum Transmission Unit"
+    tags: [mtu, networking, basics]
+
+  - url: "https://en.wikipedia.org/wiki/Jumbo_frame"
+    title: "Jumbo Frames"
+    tags: [jumbo_frame, mtu, ethernet]
+
+  - url: "https://en.wikipedia.org/wiki/Internet_Group_Management_Protocol"
+    title: "IGMP - Multicast"
+    tags: [igmp, multicast, networking]
+
+  - url: "https://en.wikipedia.org/wiki/Address_Resolution_Protocol"
+    title: "ARP Protocol"
+    tags: [arp, networking, basics]
+
+  - url: "https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol"
+    title: "DHCP Protocol"
+    tags: [dhcp, networking, basics]
+
+  # Storage-related RDMA
+  - url: "https://en.wikipedia.org/wiki/NVM_Express"
+    title: "NVMe Overview"
+    tags: [nvme, storage, basics]
+
+  - url: "https://en.wikipedia.org/wiki/SCSI_RDMA_Protocol"
+    title: "SRP - SCSI RDMA Protocol"
+    tags: [srp, scsi, rdma, storage]
+
+  - url: "https://en.wikipedia.org/wiki/ISCSI_Extensions_for_RDMA"
+    title: "iSER - iSCSI Extensions for RDMA"
+    tags: [iser, iscsi, rdma, storage]
