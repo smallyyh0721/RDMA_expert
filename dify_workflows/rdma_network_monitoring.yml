@@ -1,29 +1,78 @@
 app:
   description: >-
-    RDMA Network Monitoring & Diagnosis Workflow.
-    Uses a monitor agent to collect data, an analysis agent to diagnose issues
-    and propose action plans, and a judge agent to validate quality.
-    If analysis is insufficient, judge requests a retry or escalates to a more
-    powerful expert LLM.
+    RDMA Root Cause Analysis (RCA) Workflow.
+    Collects real monitoring data via HTTP API from rdma_monitor.py,
+    preprocesses it, retrieves relevant knowledge from RDMA fault cases,
+    performs multi-layer analysis, and produces actionable RCA reports.
+    Includes quality gating with retry loop and expert escalation.
   icon: "\U0001F50D"
   icon_background: '#1E3A5F'
   mode: workflow
-  name: RDMA Network Monitor & Diagnosis
+  name: RDMA Root Cause Analysis
   use_icon_as_answer_icon: true
 
 kind: app
 version: 0.1.2
 
+# =====================================================================
+#  ARCHITECTURE OVERVIEW
+# =====================================================================
+#
+#  +---------+     +----------------+     +---------------+
+#  |  Start  | --> | HTTP: Collect  | --> | Code: Parse & |
+#  |         |     | Monitor Data   |     | Flag Anomalies|
+#  +---------+     +----------------+     +---------------+
+#                                                |
+#                                                v
+#                                      +------------------+
+#                                      | Knowledge Retrieval|
+#                                      | (RDMA Fault Cases) |
+#                                      +------------------+
+#                                                |
+#                                                v
+#                                      +------------------+
+#                                      | LLM: RCA Analysis |
+#                                      | Agent             |
+#                               +----->+------------------+
+#                               |                |
+#                               |                v
+#                               |      +------------------+
+#                               |      | LLM: Judge Agent  |
+#                               |      +------------------+
+#                               |                |
+#                               |         [Quality Gate]
+#                               |          /     |     \
+#                               |    APPROVED  RETRY  ESCALATE
+#                               |        |      |        |
+#                               |        v      |        v
+#                               +----<--+    +--+   +---------+
+#                                        |   |     | LLM:     |
+#                                   [End |   |     | Expert   |
+#                                  Report]   |     +---------+
+#                                            |          |
+#                                            v          v
+#                                       [End Report]  [End Report]
+#
+# =====================================================================
+#  DEPLOYMENT: Start monitor API first:
+#    cd monitor && python monitor_api.py --port 5100
+#  Then import this YAML into Dify.
+#  Configure the MONITOR_API_BASE environment variable below.
+# =====================================================================
+
 workflow:
+  environment_variables:
+    - description: Base URL of the RDMA Monitor API server (monitor_api.py)
+      name: MONITOR_API_BASE
+      value: 'http://localhost:5100'
+      value_type: string
   conversation_variables: []
-  environment_variables: []
   features:
     file_upload:
       allowed_file_extensions:
         - .json
         - .txt
         - .log
-        - .csv
       allowed_file_types:
         - document
       allowed_file_upload_methods:
@@ -32,47 +81,67 @@ workflow:
       max_file_size_mb: 50
       number_limits: 5
     opening_statement: >-
-      Welcome to the RDMA Network Monitoring & Diagnosis system.
-      I will collect RDMA device status, network counters, and fabric
-      topology, then analyse the data for issues and recommend actions.
-      You can also upload existing monitoring reports for analysis.
+      RDMA Root Cause Analysis System.
+      I collect real-time RDMA metrics, network counters, and fabric
+      topology from your cluster, then perform automated root cause analysis.
+      Upload a monitoring report or let me collect live data.
     retriever_resource:
-      enabled: false
+      enabled: true
     sensitive_word_avoidance:
       enabled: false
     speech_to_text:
       enabled: false
     suggested_questions:
-      - Run a full RDMA health check on the cluster
-      - Analyse the latest monitoring report and identify issues
-      - Check for PFC deadlock symptoms
-      - Show RDMA fabric topology and link status
+      - Run full RDMA health check and RCA
+      - Analyse high error counters on mlx5_0
+      - Check for PFC deadlock or victim flow symptoms
+      - Diagnose link flapping on port 1
     text_to_speech:
       enabled: false
 
   graph:
     edges:
-      # start -> monitor
+      # start -> http-collect
       - data:
           sourceType: start
-          targetType: llm
-        id: e-start-monitor
+          targetType: http-request
+        id: e-start-collect
         source: start
         sourceHandle: source
-        target: node-monitor
+        target: node-http-collect
         targetHandle: target
 
-      # monitor -> analysis
+      # http-collect -> code-preprocess
       - data:
-          sourceType: llm
+          sourceType: http-request
+          targetType: code
+        id: e-collect-preprocess
+        source: node-http-collect
+        sourceHandle: source
+        target: node-preprocess
+        targetHandle: target
+
+      # code-preprocess -> knowledge-retrieval
+      - data:
+          sourceType: code
+          targetType: knowledge-retrieval
+        id: e-preprocess-knowledge
+        source: node-preprocess
+        sourceHandle: source
+        target: node-knowledge
+        targetHandle: target
+
+      # knowledge-retrieval -> analysis-agent
+      - data:
+          sourceType: knowledge-retrieval
           targetType: llm
-        id: e-monitor-analysis
-        source: node-monitor
+        id: e-knowledge-analysis
+        source: node-knowledge
         sourceHandle: source
         target: node-analysis
         targetHandle: target
 
-      # analysis -> judge
+      # analysis-agent -> judge-agent
       - data:
           sourceType: llm
           targetType: llm
@@ -82,92 +151,114 @@ workflow:
         target: node-judge
         targetHandle: target
 
-      # judge -> if-branch (quality check)
+      # judge-agent -> quality-gate
       - data:
           sourceType: llm
           targetType: if-else
-        id: e-judge-branch
+        id: e-judge-gate
         source: node-judge
         sourceHandle: source
-        target: node-quality-check
+        target: node-quality-gate
         targetHandle: target
 
-      # quality-check TRUE (approved) -> output
+      # quality-gate TRUE (APPROVED) -> template-report
       - data:
           sourceType: if-else
-          targetType: end
-        id: e-branch-approved
-        source: node-quality-check
+          targetType: template-transform
+        id: e-gate-report
+        source: node-quality-gate
         sourceHandle: 'true'
-        target: node-output-approved
+        target: node-report
         targetHandle: target
 
-      # quality-check FALSE -> retry-counter
+      # template-report -> end-approved
+      - data:
+          sourceType: template-transform
+          targetType: end
+        id: e-report-end
+        source: node-report
+        sourceHandle: source
+        target: node-end-approved
+        targetHandle: target
+
+      # quality-gate FALSE -> retry-or-escalate
       - data:
           sourceType: if-else
           targetType: if-else
-        id: e-branch-retry
-        source: node-quality-check
+        id: e-gate-retry
+        source: node-quality-gate
         sourceHandle: 'false'
-        target: node-retry-check
+        target: node-retry-or-escalate
         targetHandle: target
 
-      # retry-check TRUE (retries left) -> analysis (loop back)
+      # retry-or-escalate TRUE (RETRY) -> analysis-agent (loop)
       - data:
           sourceType: if-else
           targetType: llm
-        id: e-retry-to-analysis
-        source: node-retry-check
+        id: e-retry-analysis
+        source: node-retry-or-escalate
         sourceHandle: 'true'
         target: node-analysis
         targetHandle: target
 
-      # retry-check FALSE (retries exhausted) -> expert escalation
+      # retry-or-escalate FALSE (ESCALATE) -> expert
       - data:
           sourceType: if-else
           targetType: llm
-        id: e-retry-to-expert
-        source: node-retry-check
+        id: e-escalate-expert
+        source: node-retry-or-escalate
         sourceHandle: 'false'
         target: node-expert
         targetHandle: target
 
-      # expert -> final output
+      # expert -> template-expert-report
       - data:
           sourceType: llm
-          targetType: end
-        id: e-expert-output
+          targetType: template-transform
+        id: e-expert-report
         source: node-expert
         sourceHandle: source
-        target: node-output-expert
+        target: node-expert-report
+        targetHandle: target
+
+      # template-expert-report -> end-expert
+      - data:
+          sourceType: template-transform
+          targetType: end
+        id: e-expert-end
+        source: node-expert-report
+        sourceHandle: source
+        target: node-end-expert
         targetHandle: target
 
     nodes:
-      # ---------------------------------------------------------------
+      # =============================================================
       # START
-      # ---------------------------------------------------------------
+      # =============================================================
       - data:
           title: Start
           type: start
-          desc: Entry point - accepts user query or uploaded monitoring data.
+          desc: Accept user symptom description and optional uploaded report.
           variables:
-            - label: User Request
-              max_length: 2000
+            - label: Symptom / Request
+              max_length: 4000
               options: []
               required: true
-              type: text-input
+              type: paragraph
               variable: user_request
-            - label: Target Hosts
+            - label: Target Hosts (comma-separated)
               max_length: 500
               options: []
               required: false
               type: text-input
               variable: target_hosts
-            - label: Monitoring Report
+            - label: Monitor API Base URL
+              max_length: 200
+              options: []
               required: false
-              type: file
-              variable: uploaded_report
-        height: 120
+              type: text-input
+              variable: api_base_override
+        height: 150
         id: start
         position:
           x: 80
@@ -175,201 +266,386 @@ workflow:
         type: start
         width: 244
 
-      # ---------------------------------------------------------------
-      # MONITOR AGENT
-      # ---------------------------------------------------------------
+      # =============================================================
+      # HTTP REQUEST: Collect Monitoring Data
+      # =============================================================
       - data:
-          title: Monitor Agent
-          type: llm
+          title: Collect Monitor Data
+          type: http-request
           desc: >-
-            Collects RDMA device status, network counters, error counters,
-            fabric topology, and hardware health. Runs the rdma_monitor.py
-            script or equivalent system commands.
-          model:
-            completion_params:
-              temperature: 0.1
-              max_tokens: 8000
-            mode: chat
-            name: gpt-4o-mini
-            provider: openai
-          prompt_template:
-            - role: system
-              text: >-
-                You are an RDMA Network Monitor Agent. Your job is to collect
-                comprehensive monitoring data from the RDMA environment.
-
-                You MUST collect ALL of the following categories:
-
-                ## 1. RDMA Device Status
-                - Run: ibstat, rdma link show, rdma dev show, ibv_devinfo
-                - Report device names, port states, link layers, GUIDs, LIDs
-
-                ## 2. RDMA Error & Performance Counters
-                - Run: ibqueryerrors --details, perfquery --all
-                - Report ALL error counters: SymbolErrors, LinkRecovers,
-                  LinkDowned, RcvErrors, RcvRemotePhysErrors,
-                  XmtDiscards, VL15Dropped, ExcessiveBufferOverruns
-                - Report performance counters: XmtData, RcvData, XmtPkts, RcvPkts
-
-                ## 3. Network Interface Counters
-                - Run: ethtool -S <netdev>, ethtool -i <netdev>
-                - Read /sys/class/net/<dev>/statistics/ for:
-                  rx_bytes, tx_bytes, rx_packets, tx_packets,
-                  rx_errors, tx_errors, rx_dropped, tx_dropped,
-                  collisions, rx_crc_errors, rx_frame_errors
-                - Report PFC counters if available (mlnx_qos -i <dev>)
-
-                ## 4. RDMA Fabric Topology
-                - Run: ibnetdiscover, iblinkinfo, saquery
-                - Report: node count, switch count, link count
-                - Report: link speeds, widths, states
-                - Report: subnet manager info
-
-                ## 5. Hardware Health
-                - Firmware versions, board IDs, HCA types
-                - PCIe errors from dmesg
-                - Any thermal or hardware fault indicators
-
-                ## 6. System Context
-                - Kernel version, OFED version, loaded modules
-                - NUMA topology, IRQ affinity for mlx devices
-
-                If a user uploaded a report file, parse it and include its data.
-
-                Format your output as a structured monitoring report with clear
-                section headers. Include raw counter values - do NOT interpret
-                them yet. That is the Analysis Agent's job.
-
-            - role: user
-              text: >-
-                User request: {{#start.user_request#}}
-
-                Target hosts: {{#start.target_hosts#}}
-
-                Uploaded report: {{#start.uploaded_report#}}
-
-                Collect all monitoring data now. Output a structured report.
-          context:
-            enabled: false
-            variable_selector: []
-          vision:
-            enabled: false
-        height: 160
-        id: node-monitor
+            Calls the rdma_monitor API server to collect real-time RDMA
+            device status, error counters, network counters, fabric
+            topology, and hardware health. This is REAL data, not LLM
+            generated.
+          method: GET
+          url: '{{#env.MONITOR_API_BASE#}}/api/v1/collect/all'
+          headers: ''
+          params: ''
+          body:
+            type: none
+          authorization:
+            type: no-auth
+          timeout:
+            connect: 10
+            read: 120
+            write: 10
+          retry:
+            max_retries: 3
+            retry_interval: 2000
+        height: 120
+        id: node-http-collect
         position:
           x: 400
           y: 300
-        type: llm
+        type: http-request
         width: 244
 
-      # ---------------------------------------------------------------
-      # ANALYSIS AGENT
-      # ---------------------------------------------------------------
+      # =============================================================
+      # CODE: Preprocess & Flag Anomalies
+      # =============================================================
       - data:
-          title: Analysis Agent
+          title: Preprocess & Flag Anomalies
+          type: code
+          desc: >-
+            Parse the raw JSON from monitor API. Extract key metrics,
+            flag anomalies using threshold rules, and build a structured
+            summary for the LLM analysis agent. This deterministic step
+            ensures the LLM focuses on diagnosis, not data parsing.
+          code_language: python3
+          code: |
+            import json
+
+            def main(monitor_json: str, user_request: str) -> dict:
+                """Parse monitor data, flag anomalies, build RCA input."""
+                try:
+                    data = json.loads(monitor_json)
+                except (json.JSONDecodeError, TypeError):
+                    return {
+                        "summary": "ERROR: Could not parse monitor data.",
+                        "anomalies": "[]",
+                        "raw_data": str(monitor_json)[:8000]
+                    }
+
+                anomalies = []
+                summary_parts = []
+
+                # --- Device Status ---
+                device_info = data.get("device", data.get("rdma_device_status", {}))
+                ibstat = device_info.get("ibstat", [])
+                for dev in ibstat:
+                    dev_name = dev.get("name", "unknown")
+                    for port in dev.get("ports", []):
+                        props = port.get("properties", {})
+                        state = props.get("State", "")
+                        phys = props.get("Physical state", "")
+                        port_num = port.get("port_number", "?")
+                        summary_parts.append(
+                            f"Device {dev_name} Port {port_num}: State={state}, Physical={phys}"
+                        )
+                        if state != "Active":
+                            anomalies.append({
+                                "severity": "CRITICAL",
+                                "category": "Link",
+                                "device": dev_name,
+                                "port": port_num,
+                                "description": f"Port not Active (state={state}, physical={phys})",
+                                "evidence": f"ibstat shows State={state}"
+                            })
+
+                # --- Error Counters ---
+                counters = data.get("counters", data.get("rdma_counters", {}))
+                perfq = counters.get("perfquery", {})
+
+                error_thresholds = {
+                    "SymbolErrorCounter": 10,
+                    "LinkErrorRecoveryCounter": 1,
+                    "LinkDownedCounter": 1,
+                    "PortRcvErrors": 1,
+                    "PortRcvRemotePhysicalErrors": 1,
+                    "PortXmitDiscards": 100,
+                    "PortXmitConstraintErrors": 1,
+                    "PortRcvConstraintErrors": 1,
+                    "VL15Dropped": 1,
+                    "ExcessiveBufferOverrunErrors": 1,
+                    "LocalLinkIntegrityErrors": 1,
+                }
+
+                for counter_name, threshold in error_thresholds.items():
+                    val_str = perfq.get(counter_name, "0")
+                    try:
+                        val = int(val_str.split()[0]) if val_str else 0
+                    except (ValueError, IndexError):
+                        val = 0
+                    if val >= threshold:
+                        sev = "CRITICAL" if val >= threshold * 100 else "WARNING"
+                        anomalies.append({
+                            "severity": sev,
+                            "category": "Counter",
+                            "counter": counter_name,
+                            "value": val,
+                            "threshold": threshold,
+                            "description": f"{counter_name}={val} exceeds threshold {threshold}",
+                        })
+
+                # --- Network Counters ---
+                net_data = data.get("network", data.get("network_counters", {}))
+                for netdev_name, dev_stats in net_data.items():
+                    if netdev_name == "rdma_netdevs":
+                        continue
+                    if not isinstance(dev_stats, dict):
+                        continue
+                    sysfs = dev_stats.get("sysfs_counters", {})
+                    for err_key in ["rx_errors", "tx_errors", "rx_dropped", "tx_dropped",
+                                    "rx_crc_errors", "rx_frame_errors"]:
+                        val = sysfs.get(err_key, 0)
+                        if isinstance(val, int) and val > 0:
+                            anomalies.append({
+                                "severity": "WARNING",
+                                "category": "Network",
+                                "interface": netdev_name,
+                                "counter": err_key,
+                                "value": val,
+                                "description": f"{netdev_name}: {err_key}={val}",
+                            })
+
+                    # Check ethtool PFC counters for pause storm
+                    eth_stats = dev_stats.get("ethtool_stats", {})
+                    for key, val in eth_stats.items():
+                        if "pause" in key.lower() and isinstance(val, int) and val > 10000:
+                            anomalies.append({
+                                "severity": "WARNING",
+                                "category": "PFC",
+                                "interface": netdev_name,
+                                "counter": key,
+                                "value": val,
+                                "description": f"High PFC pause count: {key}={val}",
+                            })
+
+                # --- Topology ---
+                topo = data.get("topology", data.get("rdma_topology", {}))
+                topo_parsed = topo.get("ibnetdiscover", {})
+                if topo_parsed:
+                    summary_parts.append(
+                        f"Topology: {topo_parsed.get('node_count', '?')} nodes, "
+                        f"{topo_parsed.get('link_count', '?')} links"
+                    )
+
+                # --- Hardware ---
+                hw = data.get("hardware", data.get("hardware_health", {}))
+                dmesg = hw.get("dmesg_rdma", "")
+                if dmesg:
+                    for keyword in ["error", "fault", "timeout", "failed", "EEH"]:
+                        if keyword.lower() in dmesg.lower():
+                            anomalies.append({
+                                "severity": "CRITICAL",
+                                "category": "Hardware",
+                                "description": f"Kernel log contains '{keyword}' related to RDMA",
+                                "evidence": dmesg[:500],
+                            })
+                            break
+
+                # --- Build output ---
+                anomalies.sort(key=lambda a: {"CRITICAL": 0, "WARNING": 1, "INFO": 2}.get(a.get("severity", "INFO"), 3))
+
+                health = "HEALTHY"
+                if any(a["severity"] == "WARNING" for a in anomalies):
+                    health = "WARNING"
+                if any(a["severity"] == "CRITICAL" for a in anomalies):
+                    health = "CRITICAL"
+
+                summary_parts.insert(0, f"Overall Health: {health}")
+                summary_parts.append(f"Anomalies detected: {len(anomalies)}")
+
+                return {
+                    "summary": "\n".join(summary_parts),
+                    "anomalies": json.dumps(anomalies, indent=2),
+                    "health_status": health,
+                    "raw_data": json.dumps(data, indent=2, default=str)[:30000],
+                    "user_request": user_request,
+                }
+          variables:
+            - variable: monitor_json
+              value_selector:
+                - node-http-collect
+                - body
+            - variable: user_request
+              value_selector:
+                - start
+                - user_request
+          outputs:
+            summary:
+              type: string
+            anomalies:
+              type: string
+            health_status:
+              type: string
+            raw_data:
+              type: string
+            user_request:
+              type: string
+        height: 160
+        id: node-preprocess
+        position:
+          x: 720
+          y: 300
+        type: code
+        width: 244
+
+      # =============================================================
+      # KNOWLEDGE RETRIEVAL: RDMA Fault Cases & Troubleshooting
+      # =============================================================
+      - data:
+          title: Retrieve RDMA Knowledge
+          type: knowledge-retrieval
+          desc: >-
+            Search RDMA fault cases, troubleshooting guides, and tool
+            documentation for relevant diagnostic context. Uses the
+            anomaly descriptions as the retrieval query.
+          query_variable_selector:
+            - node-preprocess
+            - anomalies
+          dataset_ids: []
+          retrieval_mode: multiple
+          multiple_retrieval_config:
+            top_k: 8
+            score_threshold: 0.5
+            reranking_enable: true
+            reranking_mode: weighted_score
+            weights:
+              vector_setting:
+                vector_weight: 0.7
+              keyword_setting:
+                keyword_weight: 0.3
+          single_retrieval_config:
+            model:
+              name: gpt-4o-mini
+              provider: openai
+        height: 120
+        id: node-knowledge
+        position:
+          x: 1040
+          y: 300
+        type: knowledge-retrieval
+        width: 244
+
+      # =============================================================
+      # LLM: RCA Analysis Agent
+      # =============================================================
+      - data:
+          title: RCA Analysis Agent
           type: llm
           desc: >-
-            Analyzes monitoring data to identify issues, root causes,
-            and proposes concrete action plans.
+            Core analysis agent. Receives preprocessed metrics with
+            flagged anomalies plus retrieved RDMA knowledge. Produces
+            structured Root Cause Analysis with action plans.
           model:
             completion_params:
-              temperature: 0.3
-              max_tokens: 8000
+              temperature: 0.2
+              max_tokens: 10000
             mode: chat
             name: gpt-4o
             provider: openai
           prompt_template:
             - role: system
               text: >-
-                You are an RDMA Network Analysis Agent with deep expertise in
-                InfiniBand, RoCE, Mellanox/NVIDIA ConnectX adapters, Spectrum
-                switches, and MLNX_OFED.
+                You are an RDMA Root Cause Analysis (RCA) Agent.
 
-                You receive raw monitoring data from the Monitor Agent. Your job:
+                You receive:
+                1. Preprocessed monitoring data with flagged anomalies
+                   (deterministic threshold checks already done)
+                2. Retrieved knowledge from the RDMA fault case database
+                3. Optional judge feedback from a previous iteration
 
-                ## 1. Health Assessment
-                - Rate overall health: HEALTHY / WARNING / CRITICAL
-                - Per-device and per-port health status
+                ## Your RCA Methodology (follow strictly)
 
-                ## 2. Issue Detection
-                For each issue found, provide:
-                - **Severity**: Critical / Warning / Info
-                - **Category**: Link, Counter, Performance, Configuration, Hardware
-                - **Description**: What is wrong
-                - **Evidence**: Specific counter values or states that indicate the issue
-                - **Root Cause Analysis**: Most likely root cause(s)
+                ### Phase 1: Symptom Enumeration
+                List every anomaly and abnormal counter. Group by:
+                - Physical layer (SymbolErrors, LinkRecovers, cable)
+                - Link layer (LinkDowned, RcvErrors, state changes)
+                - Transport layer (XmtDiscards, retries, QP errors)
+                - Network layer (PFC pauses, ECN marks, drops)
+                - System layer (PCIe, firmware, driver, thermal)
 
-                ## 3. Action Plan
-                For each issue, provide a CONCRETE action plan with:
-                - **Immediate Actions**: Commands to run right now
-                - **Investigation Steps**: How to further diagnose
-                - **Remediation**: How to fix the root cause
-                - **Prevention**: How to prevent recurrence
+                ### Phase 2: Correlation Analysis
+                - Which anomalies are correlated? (same device, same time window)
+                - Which anomalies are independent?
+                - What is the causal chain? (e.g., cable fault -> SymbolErrors
+                  -> LinkRecovers -> LinkDowned -> QP retry timeout)
 
-                ## 4. Topology Analysis
-                - Identify any topology anomalies (missing links, asymmetry)
-                - Report link utilization patterns
-                - Flag any single points of failure
+                ### Phase 3: Root Cause Identification
+                For each independent root cause:
+                - **Root Cause ID**: RC-001, RC-002, ...
+                - **Confidence**: High / Medium / Low
+                - **Category**: Physical | Configuration | Software | Hardware | Design
+                - **Description**: What is the root cause
+                - **Evidence**: List of supporting anomalies/counters
+                - **Ruling Out**: What alternative causes were considered and why rejected
+                - **Matching Fault Pattern**: Reference known RDMA fault case if applicable
+                  (e.g., "Matches Case 001: PFC Deadlock")
 
-                ## 5. Performance Baseline
-                - Compare current counters against expected baselines
-                - Flag any counter growth rate anomalies
-                - Identify potential bottlenecks
+                ### Phase 4: Action Plan
+                For each root cause, provide:
+                - **Immediate (0-15 min)**: Exact commands to stabilize
+                - **Diagnostic (15-60 min)**: Commands to confirm root cause
+                - **Remediation**: Fix steps with exact commands
+                - **Validation**: How to confirm the fix worked
+                - **Prevention**: Long-term measures
 
-                ## Key Diagnostic Patterns to Check:
-                - PFC deadlock: Sustained pause frames + zero throughput
-                - Link flapping: Repeated LinkDowned counter increments
-                - Cable issues: High SymbolErrors or LinkRecovers
-                - Congestion: ExcessiveBufferOverruns, ECN marks
-                - QP errors: IBV_WC_RETRY_EXC_ERR patterns
-                - PCIe issues: Completion timeouts, correctable errors
-                - ECMP imbalance: Asymmetric traffic distribution
+                ### Phase 5: Risk Assessment
+                - **Impact Score**: 1-10 (10 = complete fabric outage)
+                - **Urgency**: Immediate / Within-hours / Scheduled
+                - **Service Impact**: What workloads are affected
+                - **Blast Radius**: Single port / device / switch / fabric-wide
 
-                Reference the RDMA Fault Cases knowledge base:
-                - Case 001: PFC Deadlock
-                - Case 002: IBV_WC_RETRY_EXC_ERR
-                - Case 003: Victim Flow
-                - Case 004: RoCE v2 GID Selection
-                - Case 005: ECN/WRED Threshold Conflict
-                - Case 006: QP Resource Exhaustion
-                - Case 007: PCIe Completion Timeout
-
-                Be specific. Include exact commands. Do NOT give vague advice.
-                If the data is insufficient for a confident diagnosis, clearly
-                state what additional data is needed.
+                ## Output Format
+                Use the exact section headers above. Be specific - include exact
+                counter values, device names, port numbers, and CLI commands.
+                Never say "check the logs" without specifying which log and what to grep for.
 
             - role: user
               text: >-
-                Here is the monitoring data collected by the Monitor Agent:
+                ## User Symptom Report
+                {{#node-preprocess.user_request#}}
 
-                {{#node-monitor.text#}}
+                ## Health Status: {{#node-preprocess.health_status#}}
 
-                Analyse this data thoroughly. Identify all issues and provide
-                concrete action plans.
+                ## Monitoring Summary
+                {{#node-preprocess.summary#}}
+
+                ## Detected Anomalies (auto-flagged)
+                {{#node-preprocess.anomalies#}}
+
+                ## Retrieved RDMA Knowledge Base Context
+                {{#node-knowledge.result#}}
+
+                ## Raw Monitoring Data
+                {{#node-preprocess.raw_data#}}
 
                 {{#node-judge.text#}}
+
+                Perform a complete Root Cause Analysis following the 5-phase methodology.
           context:
             enabled: false
             variable_selector: []
           vision:
             enabled: false
-        height: 160
+        height: 180
         id: node-analysis
         position:
-          x: 720
+          x: 1360
           y: 300
         type: llm
         width: 244
 
-      # ---------------------------------------------------------------
-      # JUDGE AGENT
-      # ---------------------------------------------------------------
+      # =============================================================
+      # LLM: Judge Agent
+      # =============================================================
       - data:
           title: Judge Agent
           type: llm
           desc: >-
-            Evaluates the quality of the Analysis Agent output.
-            Decides: approve, request retry, or escalate to expert.
+            Quality gate. Evaluates the RCA output for completeness,
+            accuracy, and actionability. Decides APPROVED / RETRY / ESCALATE.
           model:
             completion_params:
               temperature: 0.1
@@ -380,60 +656,63 @@ workflow:
           prompt_template:
             - role: system
               text: >-
-                You are a Quality Judge Agent for RDMA network diagnosis.
+                You are an RCA Quality Judge for RDMA network diagnosis.
 
-                You receive the Analysis Agent's output and must evaluate it
-                against strict quality criteria.
+                ## Evaluation Rubric
 
-                ## Evaluation Criteria
+                ### 1. Completeness (0-25)
+                - Every flagged anomaly addressed? (-5 per missed anomaly)
+                - All 5 RCA phases present? (-5 per missing phase)
+                - Topology analysis included?
 
-                ### 1. Completeness (0-25 points)
-                - All monitoring sections addressed?
-                - All detected anomalies explained?
-                - No data left unanalyzed?
+                ### 2. Causal Rigor (0-25)
+                - Correlation vs causation distinguished?
+                - Causal chains logically sound?
+                - Alternative causes explicitly ruled out?
+                - Confidence levels justified?
 
-                ### 2. Accuracy (0-25 points)
-                - Are the diagnoses technically correct?
-                - Do the cited counter values match the evidence?
-                - Are root cause analyses plausible?
+                ### 3. Actionability (0-25)
+                - Every action has an exact command?
+                - Commands use correct syntax for the detected device/port?
+                - Validation steps provided for each fix?
+                - Rollback procedures included?
 
-                ### 3. Actionability (0-25 points)
-                - Are action plans specific with exact commands?
-                - Are investigation steps clear and ordered?
-                - Can an operator follow them without guessing?
+                ### 4. Knowledge Utilization (0-25)
+                - Retrieved fault cases referenced appropriately?
+                - Counter thresholds interpreted correctly?
+                - Tool usage matches documented capabilities?
 
-                ### 4. Depth (0-25 points)
-                - Are edge cases considered?
-                - Are related issues cross-referenced?
-                - Is the topology analysis meaningful?
+                ## Scoring Rules
+                - **APPROVED** : score >= 70  (analysis is reliable for operators)
+                - **RETRY**    : score 40-69  (fixable gaps, provide specific feedback)
+                - **ESCALATE** : score < 40   (fundamental gaps, needs expert model)
 
-                ## Scoring
-                - Total score out of 100
-                - **APPROVED** if score >= 70
-                - **RETRY** if score 40-69 (provide specific feedback)
-                - **ESCALATE** if score < 40 (problem too complex)
-
-                ## Output Format
-                You MUST output in this exact format:
-
+                ## Output Format (EXACT)
+                ```
                 SCORE: <number>
                 VERDICT: APPROVED | RETRY | ESCALATE
-                FEEDBACK: <detailed feedback for improvement if RETRY>
-                MISSING: <what is missing or wrong>
-                SUGGESTIONS: <specific suggestions for the analysis agent>
 
-                Be strict but fair. The goal is to ensure operators get
-                reliable, actionable guidance.
+                COMPLETENESS: <score>/25 - <notes>
+                CAUSAL_RIGOR: <score>/25 - <notes>
+                ACTIONABILITY: <score>/25 - <notes>
+                KNOWLEDGE_USE: <score>/25 - <notes>
+
+                FEEDBACK: <specific items to fix on retry>
+                MISSING: <data or analysis gaps>
+                ```
 
             - role: user
               text: >-
-                ## Original Monitoring Data
-                {{#node-monitor.text#}}
+                ## Flagged Anomalies
+                {{#node-preprocess.anomalies#}}
 
-                ## Analysis Agent Output
+                ## RCA Analysis Output
                 {{#node-analysis.text#}}
 
-                Evaluate this analysis. Output your verdict.
+                ## Retrieved Knowledge Used
+                {{#node-knowledge.result#}}
+
+                Evaluate this RCA. Output your structured verdict.
           context:
             enabled: false
             variable_selector: []
@@ -442,18 +721,18 @@ workflow:
         height: 160
         id: node-judge
         position:
-          x: 1040
+          x: 1680
           y: 300
         type: llm
         width: 244
 
-      # ---------------------------------------------------------------
-      # IF/ELSE: Quality Check (APPROVED vs needs work)
-      # ---------------------------------------------------------------
+      # =============================================================
+      # IF/ELSE: Quality Gate
+      # =============================================================
       - data:
           title: Quality Gate
           type: if-else
-          desc: Check if judge approved the analysis.
+          desc: Routes based on judge verdict. APPROVED -> report, else -> retry/escalate check.
           conditions:
             - comparison_operator: contains
               id: cond-approved
@@ -462,23 +741,22 @@ workflow:
                 - node-judge
                 - text
         height: 120
-        id: node-quality-check
+        id: node-quality-gate
         position:
-          x: 1360
+          x: 2000
           y: 300
         type: if-else
         width: 244
 
-      # ---------------------------------------------------------------
-      # IF/ELSE: Retry Counter Check
-      # ---------------------------------------------------------------
+      # =============================================================
+      # IF/ELSE: Retry or Escalate
+      # =============================================================
       - data:
-          title: Retry Check
+          title: Retry or Escalate
           type: if-else
           desc: >-
-            Check if verdict is RETRY (not ESCALATE).
-            If RETRY, loop back to analysis with judge feedback.
-            If ESCALATE, forward to expert LLM.
+            RETRY -> loop back to analysis agent with judge feedback.
+            ESCALATE -> forward to expert LLM.
           conditions:
             - comparison_operator: contains
               id: cond-retry
@@ -487,25 +765,26 @@ workflow:
                 - node-judge
                 - text
         height: 120
-        id: node-retry-check
+        id: node-retry-or-escalate
         position:
-          x: 1360
+          x: 2000
           y: 520
         type: if-else
         width: 244
 
-      # ---------------------------------------------------------------
-      # EXPERT LLM (Escalation)
-      # ---------------------------------------------------------------
+      # =============================================================
+      # LLM: Expert (Escalation Target)
+      # =============================================================
       - data:
           title: Expert LLM
           type: llm
           desc: >-
-            Senior expert LLM for complex cases that the standard
-            analysis agent cannot handle. Uses a more powerful model.
+            Most powerful model. Handles cases the standard analysis
+            agent could not resolve. Deep multi-factor RCA with
+            advanced debugging and vendor escalation guidance.
           model:
             completion_params:
-              temperature: 0.2
+              temperature: 0.15
               max_tokens: 16000
             mode: chat
             name: o1-preview
@@ -513,136 +792,242 @@ workflow:
           prompt_template:
             - role: system
               text: >-
-                You are a Senior RDMA Network Expert with 20+ years of experience
-                in InfiniBand, RoCE, NVIDIA/Mellanox hardware, and large-scale
-                HPC/AI cluster networking.
+                You are a Senior RDMA Network Expert. This case was ESCALATED
+                because the standard RCA agent failed quality review.
 
-                This case was escalated to you because the standard analysis
-                agent could not provide a satisfactory diagnosis.
+                You have 20+ years in InfiniBand, RoCE, NVIDIA/Mellanox ConnectX
+                (CX-3 through CX-8), Spectrum switches, and MLNX_OFED.
 
-                You have access to:
-                - Raw monitoring data from the Monitor Agent
-                - The initial analysis attempt
-                - The Judge's feedback on why it was insufficient
+                ## What you receive
+                - Raw monitoring data (real metrics from rdma_monitor.py)
+                - Auto-flagged anomalies (deterministic threshold checks)
+                - The failed RCA attempt and judge feedback
+                - Retrieved knowledge from RDMA fault case database
 
-                ## Your Responsibilities
+                ## Your mandate
+                1. **Deep multi-factor RCA**: Consider interacting failure modes.
+                   E.g., PFC deadlock + victim flow + ECMP imbalance creating a
+                   cascading fabric degradation.
 
-                ### Deep Diagnosis
-                - Consider complex multi-factor failure modes
-                - Analyze interactions between components
-                - Check for race conditions and timing-dependent issues
-                - Consider firmware bugs, driver issues, and hardware errata
+                2. **Advanced diagnostics**: Commands beyond standard tools:
+                   - mlx5 debug: `mlxreg -d /dev/mst/mt4123_pciconf0 --reg_name PPCNT`
+                   - Firmware trace: `mlxfwmanager --query`, `flint` commands
+                   - PCIe AER: `lspci -vvv -s <bdf> | grep -A20 'Capabilities.*AER'`
+                   - Kernel debug: `echo 8 > /proc/sys/kernel/printk`, `perf trace`
 
-                ### Expert-Level Action Plan
-                - Provide step-by-step diagnostic procedures
-                - Include advanced debugging commands (e.g., mlx5 debug registers,
-                  firmware trace collection, PCIe AER analysis)
-                - Suggest configuration changes with full before/after comparison
-                - Include rollback procedures for every change
+                3. **Configuration forensics**: Detect misconfigurations by
+                   cross-checking multiple sources (sysfs, ethtool, mlnx_qos,
+                   tc filter, ip rule).
 
-                ### Risk Assessment
-                - Assess potential data loss or service impact
-                - Prioritize actions by urgency and risk
-                - Identify what can be done online vs requires maintenance window
+                4. **Risk-scored action plan**: Every action gets:
+                   - Risk: None / Low / Medium / High
+                   - Service impact: Online / Brief-disruption / Maintenance-window
+                   - Rollback: Exact undo command
 
-                ### Knowledge Base Cross-Reference
-                - Reference known bugs and errata
-                - Cite relevant ConnectX / Spectrum documentation
-                - Reference RDMA fault case patterns (PFC deadlock, victim flow,
-                  QP exhaustion, PCIe timeout, etc.)
+                5. **Vendor escalation template** (if needed):
+                   - sysdump collection command
+                   - Support case severity recommendation
+                   - Data to attach (dmesg, ibdiagnet, fw traces)
 
-                ### Escalation Path
-                - If the issue requires vendor support, provide:
-                  - Exact data to collect for the support case
-                  - Recommended severity level
-                  - Expected resolution timeline
-
-                Be thorough, precise, and authoritative. This is the last line
-                of automated defense before a human expert is engaged.
+                ## Known complex patterns to check
+                - PFC deadlock cascade (Case 001 + Case 003 interaction)
+                - ECN/WRED misconfiguration creating oscillation (Case 005)
+                - QP exhaustion under ECMP with asymmetric fabric (Case 006)
+                - PCIe completion timeout from thermal throttling (Case 007)
+                - Silent data corruption from firmware bug (check errata)
+                - DCBX negotiation failure causing mixed lossless/lossy traffic
 
             - role: user
               text: >-
                 ## ESCALATED CASE
 
-                ### Raw Monitoring Data
-                {{#node-monitor.text#}}
+                ### User Symptom
+                {{#node-preprocess.user_request#}}
 
-                ### Initial Analysis (insufficient)
+                ### Health Status: {{#node-preprocess.health_status#}}
+
+                ### Auto-Flagged Anomalies
+                {{#node-preprocess.anomalies#}}
+
+                ### Raw Monitoring Data
+                {{#node-preprocess.raw_data#}}
+
+                ### Knowledge Base Context
+                {{#node-knowledge.result#}}
+
+                ### Failed RCA Attempt
                 {{#node-analysis.text#}}
 
-                ### Judge Feedback
+                ### Judge Feedback (why it failed)
                 {{#node-judge.text#}}
 
-                Provide your expert diagnosis and comprehensive action plan.
+                Provide your expert-level Root Cause Analysis.
           context:
             enabled: false
             variable_selector: []
           vision:
             enabled: false
-        height: 160
+        height: 180
         id: node-expert
         position:
-          x: 1680
+          x: 2320
           y: 520
         type: llm
         width: 244
 
-      # ---------------------------------------------------------------
-      # OUTPUT: Approved Analysis
-      # ---------------------------------------------------------------
+      # =============================================================
+      # TEMPLATE: Format Approved RCA Report
+      # =============================================================
       - data:
-          title: Output (Approved)
-          type: end
-          desc: Final output when analysis is approved by the judge.
-          outputs:
-            - value_selector:
-                - node-monitor
-                - text
-              variable: monitoring_data
-            - value_selector:
+          title: Format RCA Report
+          type: template-transform
+          desc: Assemble the final approved RCA report.
+          template: |
+            # RDMA Root Cause Analysis Report
+
+            **Status**: APPROVED by Quality Judge
+            **Health**: {{health_status}}
+            **Generated**: {{timestamp}}
+
+            ---
+
+            ## Monitoring Summary
+            {{summary}}
+
+            ---
+
+            ## Root Cause Analysis
+            {{analysis}}
+
+            ---
+
+            ## Quality Review
+            {{verdict}}
+          variables:
+            - variable: health_status
+              value_selector:
+                - node-preprocess
+                - health_status
+            - variable: timestamp
+              value_selector:
+                - node-preprocess
+                - summary
+            - variable: summary
+              value_selector:
+                - node-preprocess
+                - anomalies
+            - variable: analysis
+              value_selector:
                 - node-analysis
                 - text
-              variable: analysis_report
-            - value_selector:
+            - variable: verdict
+              value_selector:
                 - node-judge
                 - text
-              variable: judge_verdict
         height: 120
-        id: node-output-approved
+        id: node-report
         position:
-          x: 1680
+          x: 2320
+          y: 200
+        type: template-transform
+        width: 244
+
+      # =============================================================
+      # TEMPLATE: Format Expert RCA Report
+      # =============================================================
+      - data:
+          title: Format Expert Report
+          type: template-transform
+          desc: Assemble the escalated expert RCA report.
+          template: |
+            # RDMA Root Cause Analysis Report (EXPERT ESCALATION)
+
+            **Status**: Escalated to Expert LLM
+            **Health**: {{health_status}}
+
+            ---
+
+            ## Monitoring Summary
+            {{summary}}
+
+            ---
+
+            ## Expert Root Cause Analysis
+            {{expert_analysis}}
+
+            ---
+
+            ## Escalation Context
+            ### Initial Analysis (rejected)
+            {{initial_analysis}}
+
+            ### Judge Feedback
+            {{judge_feedback}}
+          variables:
+            - variable: health_status
+              value_selector:
+                - node-preprocess
+                - health_status
+            - variable: summary
+              value_selector:
+                - node-preprocess
+                - anomalies
+            - variable: expert_analysis
+              value_selector:
+                - node-expert
+                - text
+            - variable: initial_analysis
+              value_selector:
+                - node-analysis
+                - text
+            - variable: judge_feedback
+              value_selector:
+                - node-judge
+                - text
+        height: 120
+        id: node-expert-report
+        position:
+          x: 2640
+          y: 520
+        type: template-transform
+        width: 244
+
+      # =============================================================
+      # END: Approved
+      # =============================================================
+      - data:
+          title: End (Approved)
+          type: end
+          desc: Final output for approved RCA.
+          outputs:
+            - value_selector:
+                - node-report
+                - output
+              variable: rca_report
+        height: 90
+        id: node-end-approved
+        position:
+          x: 2640
           y: 200
         type: end
         width: 244
 
-      # ---------------------------------------------------------------
-      # OUTPUT: Expert Escalation
-      # ---------------------------------------------------------------
+      # =============================================================
+      # END: Expert
+      # =============================================================
       - data:
-          title: Output (Expert)
+          title: End (Expert)
           type: end
-          desc: Final output when case was escalated to expert LLM.
+          desc: Final output for expert-escalated RCA.
           outputs:
             - value_selector:
-                - node-monitor
-                - text
-              variable: monitoring_data
-            - value_selector:
-                - node-analysis
-                - text
-              variable: initial_analysis
-            - value_selector:
-                - node-judge
-                - text
-              variable: judge_feedback
-            - value_selector:
-                - node-expert
-                - text
-              variable: expert_diagnosis
-        height: 120
-        id: node-output-expert
+                - node-expert-report
+                - output
+              variable: rca_report
+        height: 90
+        id: node-end-expert
         position:
-          x: 2000
+          x: 2960
           y: 520
         type: end
         width: 244
