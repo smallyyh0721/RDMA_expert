@@ -993,6 +993,40 @@ workflow:
         width: 244
 
       # =============================================================
+      # TEMPLATE: Approved RCA Report
+      # =============================================================
+      - data:
+          title: RCA Report
+          type: template-transform
+          desc: >-
+            Format the approved RCA analysis into a user-friendly
+            report with structured sections.
+          template: |
+            # RDMA Root Cause Analysis Report
+
+            ## Summary
+            {{#node-preprocess.summary#}}
+
+            ## Health Status
+            {{#node-preprocess.health_status#}}
+
+            ## Analysis
+            {{#node-analysis.text#}}
+
+            ## User Request
+            {{#node-preprocess.user_request#}}
+          outputs:
+            output:
+              type: string
+        height: 120
+        id: node-report
+        position:
+          x: 2400
+          y: 200
+        type: template-transform
+        width: 244
+
+      # =============================================================
       # END: Approved
       # =============================================================
       - data:

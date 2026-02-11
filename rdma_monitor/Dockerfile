@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app/rdma_monitor
 
 # Prometheus metrics port
-EXPOSE 9090
+EXPOSE 8004
 
 ENTRYPOINT ["python", "-m", "rdma_monitor"]
 CMD ["--config", "/app/rdma_monitor/config.yaml"]
